@@ -1,0 +1,140 @@
+const db = require("../models");
+const User = db.user;
+const bcrypt = require("bcryptjs");
+
+// This code defines functions for each of the different types of users. Each user type is given a different level of access to the site's content. For example, an admin user can access all content on the site, whereas a regular user can only access content that is not restricted to admins.
+
+exports.allAccess = (req, res) => {
+    res.status(200).send("Public Content.");
+};
+
+exports.userBoard = (req, res) => {
+    res.status(200).send("User Content.");
+};
+
+exports.adminBoard = (req, res) => {
+    res.status(200).send("Admin Content.");
+};
+
+exports.moderatorBoard = (req, res) => {
+    res.status(200).send("Moderator Content.");
+};
+
+// This code is used to get all users from the database, get a single user by their id, delete a user, and update a user in the database.
+// The code uses the User model from the database, and the bcrypt library to hash the user's password if it is sent in the request.
+
+/**
+Retrieves all users from the database.
+@async
+@function getUsers
+@param {Object} req - Express request object.
+@param {Object} res - Express response object.
+@returns {Promise<void>} - A Promise that resolves with no value upon completion.
+@throws {Error} - If an error occurs while retrieving the users.
+@example
+getUsers(req, res);
+*/
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.findAll();
+
+        res.status(200).send(users);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+}
+
+/**
+Retrieves a user by their ID from the database.
+@async
+@function getUserById
+@param {Object} req - Express request object.
+@param {Object} res - Express response object.
+@returns {Promise<void>} - A Promise that resolves with no value upon completion.
+@throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
+@example
+getUserById(req, res);
+*/
+exports.getUserById = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+
+        if (!user) {
+            res.status(404).send({ message: "User does not exist!" });
+            return;
+        }
+
+        res.status(200).send(user);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+}
+
+/**
+Deletes a user from the database.
+@async
+@function deleteUser
+@param {Object} req - Express request object.
+@param {Object} res - Express response object.
+@returns {Promise<void>} - A Promise that resolves with no value upon completion.
+@throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
+@example
+deleteUser(req, res);
+*/
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+
+        if (!user) {
+            res.status(404).send({ message: "User does not exist!" });
+            return;
+        }
+
+        await user.destroy();
+        res.status(200).send({ message: "User deleted successfully!" });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+}
+
+/**
+ * Updates a user in the database.
+ *
+ * @async
+ * @function updateUser
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
+ *
+ * @example
+ * const updatedUserData = {
+ *     name: "John Doe",
+ *     email: "johndoe@example.com",
+ *     password: "newpassword",
+ * };
+ * const req = { params: { id: 123 }, body: updatedUserData };
+ * const res = {
+ *     status: function(code) { return this; },
+ *     send: function(data) { console.log(data); }
+ * };
+ * await updateUser(req, res);
+ */
+exports.updateUser = async (req, res) => {
+    try {
+        if (req.body.password) req.body.password = bcrypt.hashSync(req.body.password, 8);
+
+        const user = await User.findByPk(req.params.id);
+
+        if (!user) {
+            res.status(404).send({ message: "User does not exist!" });
+            return;
+        }
+
+        await user.update(req.body);
+        res.status(200).send({ message: "User updated successfully!" });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+}
+
