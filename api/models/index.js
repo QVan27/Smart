@@ -36,13 +36,18 @@ db.role.belongsToMany(db.user, {
     otherKey: "userId"
 });
 
-db.role.belongsToMany(db.user, {
+db.user.belongsToMany(db.role, {
     through: "user_roles",
-    foreignKey: "roleId",
-    otherKey: "userId"
+    foreignKey: "userId",
+    otherKey: "roleId"
 });
 
-
 db.ROLES = ["user", "admin", "moderator"];
+
+db.room = require("../models/room.model.js")(sequelize, Sequelize);
+
+// db.user.belongsTo(db.room);
+
+// db.room.hasMany(db.user);
 
 module.exports = db;
