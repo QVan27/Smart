@@ -46,8 +46,7 @@ db.ROLES = ["user", "admin", "moderator"];
 
 db.room = require("../models/room.model.js")(sequelize, Sequelize);
 
-// db.user.belongsTo(db.room);
-
-// db.room.hasMany(db.user);
+db.user.belongsTo(db.room);
+db.room.hasMany(db.user);
 
 module.exports = db;

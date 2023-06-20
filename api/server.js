@@ -23,6 +23,7 @@ app.get("/", (req, res) => {
 // routes
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
+require('./routes/room.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -30,27 +31,27 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-// const db = require("./models");
-// const Role = db.role;
+const db = require("./models");
+const Role = db.role;
 
-// db.sequelize.sync({force: true}).then(() => {
-//   console.log('Drop and Resync Db');
-//   initial();
-// });
+db.sequelize.sync({force: true}).then(() => {
+  console.log('Drop and Resync Database');
+  initial();
+});
 
-// function initial() {
-//   Role.create({
-//     id: 1,
-//     name: "user"
-//   });
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user"
+  });
  
-//   Role.create({
-//     id: 2,
-//     name: "moderator"
-//   });
+  Role.create({
+    id: 2,
+    name: "moderator"
+  });
  
-//   Role.create({
-//     id: 3,
-//     name: "admin"
-//   });
-// }
+  Role.create({
+    id: 3,
+    name: "admin"
+  });
+}
