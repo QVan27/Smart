@@ -1,35 +1,27 @@
 module.exports = (sequelize, Sequelize) => {
-    const Room = sequelize.define("rooms", {
+    const Booking = sequelize.define("bookings", {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        name: {
+        startDate: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        image: {
+        endDate: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        capacity: {
-            type: Sequelize.INTEGER,
-            allowNull: false
-        },
-        floor: {
+        purpose: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        pointOfContactEmail: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        pointOfContactPhone: {
-            type: Sequelize.STRING,
-            allowNull: false
+        isModerator: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
         }
     });
 
-    return Room;
+    return Booking;
 };

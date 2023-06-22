@@ -45,8 +45,16 @@ db.user.belongsToMany(db.role, {
 db.ROLES = ["user", "admin", "moderator"];
 
 db.room = require("../models/room.model.js")(sequelize, Sequelize);
+db.booking = require("../models/booking.model")(sequelize, Sequelize);
 
 db.user.belongsTo(db.room);
 db.room.hasMany(db.user);
+
+db.room.hasMany(db.booking, {
+    foreignKey: {
+        allowNull: false
+    }
+});
+db.booking.belongsTo(db.room);
 
 module.exports = db;
