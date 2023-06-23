@@ -42,7 +42,7 @@ db.user.belongsToMany(db.role, {
     otherKey: "roleId"
 });
 
-db.ROLES = ["user", "admin", "moderator"];
+db.ROLES = ["USER", "MODERATOR", "ADMIN"];
 
 db.room = require("../models/room.model.js")(sequelize, Sequelize);
 db.booking = require("../models/booking.model")(sequelize, Sequelize);
