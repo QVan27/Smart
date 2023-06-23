@@ -33,8 +33,9 @@ app.listen(PORT, () => {
 
 const db = require("./models");
 const Role = db.role;
+const User = db.user;
 
-db.sequelize.sync({force: true}).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   console.log('Drop and Resync Database');
   initial();
 });
@@ -44,14 +45,34 @@ function initial() {
     id: 1,
     name: "USER"
   });
- 
+
   Role.create({
     id: 2,
     name: "MODERATOR"
   });
- 
+
   Role.create({
     id: 3,
     name: "ADMIN"
+  });
+
+  const bcrypt = require("bcryptjs");
+  const password = "password123";
+  const hashedPassword = bcrypt.hashSync(password, 8);
+
+  User.create({
+    id: 1,
+    firstName: "Quentin",
+    lastName: "Vannarath",
+    email: "admin@smart.com",
+    position: "Developer",
+    picture: "profile.jpg",
+    password: hashedPassword,
+  }).then(user => {
+    Role.findOne({ where: { name: "ADMIN" } }).then(role => {
+      user.setRoles([role]).then(() => {
+        console.log("Initial user with ADMIN role created successfully.");
+      });
+    });
   });
 }
