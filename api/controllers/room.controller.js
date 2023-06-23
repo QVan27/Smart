@@ -7,6 +7,13 @@ const Room = db.room;
  * @async
  * @function createRoom
  * @param {Object} req - Express request object.
+ * @param {Object} req.body - Request body containing room data.
+ * @param {string} req.body.name - Name of the room.
+ * @param {string} req.body.image - Image URL of the room.
+ * @param {number} req.body.capacity - Capacity of the room.
+ * @param {string} req.body.floor - Floor of the room.
+ * @param {string} req.body.pointOfContactEmail - Email address of the point of contact for the room.
+ * @param {string} req.body.pointOfContactPhone - Phone number of the point of contact for the room.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while creating the room.
@@ -14,7 +21,11 @@ const Room = db.room;
  * @example
  * const newRoomData = {
  *     name: "Conference Room",
- *     capacity: 10
+ *     image: "room.jpg",
+ *     capacity: 10,
+ *     floor: "2nd floor",
+ *     pointOfContactEmail: "contact@example.com",
+ *     pointOfContactPhone: "1234567890"
  * };
  * const req = { body: newRoomData };
  * const res = {
@@ -24,144 +35,170 @@ const Room = db.room;
  * await createRoom(req, res);
  */
 exports.createRoom = async (req, res) => {
-    try {
-        const { name, capacity } = req.body;
+  // Check if all required data is present
+  if (!req.body.name || !req.body.image || !req.body.capacity || !req.body.floor || !req.body.pointOfContactEmail || !req.body.pointOfContactPhone) {
+    res.status(400).send({ message: "All data must be provided!" });
+    return;
+  }
 
-        if (!name || !capacity) {
-            res.status(400).send({ message: "Name and capacity are required!" });
-            return;
-        }
+  // Create a new Room instance with the provided data
+  const room = {
+    name: req.body.name,
+    image: req.body.image,
+    capacity: req.body.capacity,
+    floor: req.body.floor,
+    pointOfContactEmail: req.body.pointOfContactEmail,
+    pointOfContactPhone: req.body.pointOfContactPhone
+  };
 
-        const room = await Room.create({ name, capacity });
-
-        res.status(201).send({ message: "Room created successfully!", room });
-    } catch (err) {
-        res.status(500).send({ message: err.message });
-    }
+  try {
+    // Save the room to the database
+    const data = await Room.create(room);
+    res.send(data);
+  } catch (err) {
+    res.status(500).send({ message: err.message || "An error occurred while creating the room." });
+  }
 };
 
 /**
- * Retrieves all rooms from the database.
+ * Retrieves all rooms.
  *
  * @async
- * @function getRooms
+ * @function getAllRooms
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the rooms.
  *
  * @example
- * getRooms(req, res);
+ * const req = {};
+ * const res = {
+ *     send: function(data) { console.log(data); }
+ * };
+ * await getAllRooms(req, res);
  */
-exports.getRooms = async (req, res) => {
-    try {
-        const rooms = await Room.findAll();
-
-        res.status(200).send(rooms);
-    } catch (err) {
-        res.status(500).send({ message: err.message });
-    }
+exports.getAllRooms = async (req, res) => {
+  try {
+    // Retrieve all rooms from the database
+    const data = await Room.findAll();
+    res.send(data);
+  } catch (err) {
+    res.status(500).send({ message: err.message || "An error occurred while retrieving the rooms." });
+  }
 };
 
 /**
- * Retrieves a room by its ID from the database.
+ * Retrieves a room by its ID.
  *
  * @async
  * @function getRoomById
  * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the room.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
- * @throws {Error} - If an error occurs while retrieving the room or if the room does not exist.
+ * @throws {Error} - If an error occurs while retrieving the room.
  *
  * @example
- * getRoomById(req, res);
+ * const roomId = "123456";
+ * const req = { params: { id: roomId } };
+ * const res = {
+ *     send: function(data) { console.log(data); },
+ *     status: function(code) { return this; }
+ * };
+ * await getRoomById(req, res);
  */
 exports.getRoomById = async (req, res) => {
-    try {
-        const room = await Room.findByPk(req.params.id);
+  const id = req.params.id;
 
-        if (!room) {
-            res.status(404).send({ message: "Room does not exist!" });
-            return;
-        }
-
-        res.status(200).send(room);
-    } catch (err) {
-        res.status(500).send({ message: err.message });
+  try {
+    // Retrieve a room by its ID from the database
+    const data = await Room.findByPk(id);
+    if (data) {
+      res.send(data);
+    } else {
+      res.status(404).send({ message: "Room not found with the specified ID." });
     }
+  } catch (err) {
+    res.status(500).send({ message: err.message || "An error occurred while retrieving the room." });
+  }
 };
 
 /**
- * Updates a room in the database.
+ * Updates a room by its ID.
  *
  * @async
  * @function updateRoom
  * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the room.
+ * @param {Object} req.body - Request body containing updated room data.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
- * @throws {Error} - If an error occurs while retrieving the room or if the room does not exist.
+ * @throws {Error} - If an error occurs while updating the room.
  *
  * @example
+ * const roomId = "123456";
  * const updatedRoomData = {
  *     name: "Updated Room",
- *     capacity: 15
+ *     capacity: 20
  * };
- * const req = { params: { id: 123 }, body: updatedRoomData };
+ * const req = { params: { id: roomId }, body: updatedRoomData };
  * const res = {
- *     status: function(code) { return this; },
- *     send: function(data) { console.log(data); }
+ *     send: function(data) { console.log(data); },
+ *     status: function(code) { return this; }
  * };
  * await updateRoom(req, res);
  */
 exports.updateRoom = async (req, res) => {
-    try {
-        const { name, capacity } = req.body;
+  const id = req.params.id;
 
-        if (!name || !capacity) {
-            res.status(400).send({ message: "Name and capacity are required!" });
-            return;
-        }
-
-        const room = await Room.findByPk(req.params.id);
-
-        if (!room) {
-            res.status(404).send({ message: "Room does not exist!" });
-            return;
-        }
-
-        await room.update({ name, capacity });
-
-        res.status(200).send({ message: "Room updated successfully!" });
-    } catch (err) {
-        res.status(500).send({ message: err.message });
+  try {
+    // Update the room in the database
+    const num = await Room.update(req.body, { where: { id: id } });
+    if (num == 1) {
+      res.send({ message: "Room updated successfully." });
+    } else {
+      res.status(404).send({ message: `Unable to update the room with the specified ID. Room not found or empty data provided.` });
     }
+  } catch (err) {
+    res.status(500).send({ message: err.message || "An error occurred while updating the room." });
+  }
 };
 
 /**
- * Deletes a room from the database.
+ * Deletes a room by its ID.
  *
  * @async
  * @function deleteRoom
  * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the room.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
- * @throws {Error} - If an error occurs while retrieving the room or if the room does not exist.
+ * @throws {Error} - If an error occurs while deleting the room.
  *
  * @example
- * deleteRoom(req, res);
+ * const roomId = "123456";
+ * const req = { params: { id: roomId } };
+ * const res = {
+ *     send: function(data) { console.log(data); },
+ *     status: function(code) { return this; }
+ * };
+ * await deleteRoom(req, res);
  */
 exports.deleteRoom = async (req, res) => {
-    try {
-        const room = await Room.findByPk(req.params.id);
+  const id = req.params.id;
 
-        if (!room) {
-            res.status(404).send({ message: "Room does not exist!" });
-            return;
-        }
-
-        await room.destroy();
-        res.status(200).send({ message: "Room deleted successfully!" });
-    } catch (err) {
-        res.status(500).send({ message: err.message });
+  try {
+    // Delete the room from the database
+    const num = await Room.destroy({ where: { id: id } });
+    if (num == 1) {
+      res.send({ message: "Room deleted successfully." });
+    } else {
+      res.status(404).send({ message: `Unable to delete the room with the specified ID. Room not found.` });
     }
+  } catch (err) {
+    res.status(500).send({ message: err.message || "An error occurred while deleting the room." });
+  }
 };

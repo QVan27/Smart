@@ -10,26 +10,10 @@ module.exports = function (app) {
         next();
     });
 
-    // app.get("/api/test/all", controller.allAccess);
-
-    // app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
-
-    // app.get(
-    //     "/api/test/mod",
-    //     [authJwt.verifyToken, authJwt.isModerator],
-    //     controller.moderatorBoard
-    // );
-
-    // app.get(
-    //     "/api/test/admin",
-    //     [authJwt.verifyToken, authJwt.isAdmin],
-    //     controller.adminBoard
-    // );
-
     app.get(
         "/api/rooms",
         [authJwt.verifyToken],
-        controller.getRooms
+        controller.getAllRooms
     );
 
     app.get(
@@ -40,13 +24,13 @@ module.exports = function (app) {
 
     app.post(
         "/api/rooms",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         controller.createRoom
     );
 
     app.put(
         "/api/rooms/:id",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         controller.updateRoom
     );
 
