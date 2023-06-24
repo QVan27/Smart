@@ -13,7 +13,7 @@ module.exports = {
         firstName,
         lastName,
         email,
-        position: faker.helpers.arrayElement(["developpeur", "designer", "marketing", "UX/UI", "manager"], { min: 1, max: 1 }),
+        position: faker.helpers.arrayElement(["developer", "designer", "marketing", "UX/UI", "manager"], { min: 1, max: 1 }),
         picture: faker.image.avatar(),
         password: bcrypt.hashSync('password123', 8), // Remplacer 'password123' par le mot de passe souhaité
         createdAt: new Date(),

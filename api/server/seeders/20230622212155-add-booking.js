@@ -30,7 +30,7 @@ module.exports = {
           type: queryInterface.sequelize.QueryTypes.SELECT
         });
 
-        const randomUserIds = faker.helpers.arrayElements(users.map(user => user.id)).slice(0, faker.number.int({ min: 1, max: 5 }));
+        const randomUserIds = faker.helpers.arrayElements(users.map(user => user.id)).slice(0, faker.number.int({ min: 2, max: 30 }));
 
         const bookingUserAssociations = randomUserIds.map(userId => ({
           userId: userId,
