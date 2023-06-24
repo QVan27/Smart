@@ -51,4 +51,6 @@ module.exports = function (app) {
     );
 
     app.get('/api/users/:id/bookings', [authJwt.verifyToken], controller.getUserBookings);
+    app.get('/api/user/bookings', [authJwt.verifyToken], controller.getSessionUserBookings);
+
 };

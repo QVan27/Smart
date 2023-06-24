@@ -189,3 +189,36 @@ exports.getUserBookings = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
+
+/**
+ * Retrieves the bookings associated with the currently authenticated user.
+ *
+ * @async
+ * @function getSessionUserBookings
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the user's bookings.
+ *
+ * @example
+ * getSessionUserBookings(req, res);
+ */
+ exports.getSessionUserBookings = async (req, res) => {
+    try {
+      const userId = req.userId; // Assuming the authenticated user's ID is available in the request object (req.userId)
+  
+      const user = await User.findByPk(userId, {
+        include: "bookings",
+      });
+  
+      if (!user) {
+        res.status(404).send({ message: "User does not exist!" });
+        return;
+      }
+  
+      const bookings = user.bookings;
+      res.status(200).send(bookings);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  };
