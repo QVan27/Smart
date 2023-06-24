@@ -29,6 +29,8 @@ db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
+db.room = require("../models/room.model.js")(sequelize, Sequelize);
+db.booking = require("../models/booking.model")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
     through: "user_roles",
@@ -44,11 +46,17 @@ db.user.belongsToMany(db.role, {
 
 db.ROLES = ["USER", "MODERATOR", "ADMIN"];
 
-db.room = require("../models/room.model.js")(sequelize, Sequelize);
-db.booking = require("../models/booking.model")(sequelize, Sequelize);
+db.booking.belongsToMany(db.user, {
+    through: "user_bookings",
+    foreignKey: "bookingId",
+    otherKey: "userId"
+});
 
-db.user.belongsTo(db.room);
-db.room.hasMany(db.user);
+db.user.belongsToMany(db.booking, {
+    through: "user_bookings",
+    foreignKey: "userId",
+    otherKey: "bookingId"
+});
 
 db.room.hasMany(db.booking, {
     foreignKey: {

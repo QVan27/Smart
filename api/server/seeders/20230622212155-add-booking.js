@@ -13,16 +13,39 @@ module.exports = {
         endDate: faker.date.future(),
         purpose: faker.word.words(5),
         roomId: room.id,
-        isModerator: faker.datatype.boolean() ,
+        isModerator: faker.datatype.boolean(),
         createdAt: new Date(),
         updatedAt: new Date(),
       }));
 
       await queryInterface.bulkInsert('bookings', bookings, {});
+
+      const createdBookings = await queryInterface.sequelize.query("SELECT id FROM bookings WHERE roomId = :roomId", {
+        replacements: { roomId: room.id },
+        type: queryInterface.sequelize.QueryTypes.SELECT
+      });
+
+      for (const createdBooking of createdBookings) {
+        const users = await queryInterface.sequelize.query("SELECT id FROM Users", {
+          type: queryInterface.sequelize.QueryTypes.SELECT
+        });
+
+        const randomUserIds = faker.helpers.arrayElements(users.map(user => user.id)).slice(0, faker.number.int({ min: 1, max: 5 }));
+
+        const bookingUserAssociations = randomUserIds.map(userId => ({
+          userId: userId,
+          bookingId: createdBooking.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }));
+
+        await queryInterface.bulkInsert('user_bookings', bookingUserAssociations, {});
+      }
     }
   },
 
   down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('user_bookings', null, {});
     await queryInterface.bulkDelete('bookings', null, {});
   }
 };
