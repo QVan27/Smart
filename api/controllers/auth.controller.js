@@ -153,3 +153,17 @@ exports.signin = (req, res) => {
             next(new ErrorResponse(err.message, 500));
         });
 };
+
+/**
+ * Logs out a user by clearing the access token from the cookie or Authorization header.
+ *
+ * @function logout
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {void}
+ */
+exports.logout = (req, res) => {
+    res.clearCookie("accessToken");
+    res.setHeader("Authorization", "");
+    res.status(200).send({ message: "Logout successful!" });
+};
