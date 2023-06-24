@@ -1,3 +1,4 @@
+const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const Booking = db.booking;
 const User = db.user;
@@ -16,6 +17,7 @@ const User = db.user;
  * @param {boolean} [req.body.isModerator=false] - Indicates if the user creating the booking is a moderator.
  * @param {string[]} [req.body.userIds=[]] - Array containing the IDs of users to associate with the booking.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while creating the booking or if `roomId` is null.
  *
@@ -35,11 +37,11 @@ const User = db.user;
  * };
  * await createBooking(req, res);
  */
-exports.createBooking = async (req, res) => {
+exports.createBooking = async (req, res, next) => {
   const { startDate, endDate, purpose, roomId, isModerator = false, userIds = [] } = req.body;
 
   if (!roomId) {
-    return res.status(400).send({ message: "roomId cannot be null." });
+    return next(new ErrorResponse("roomId cannot be null.", 400));
   }
 
   try {
@@ -53,7 +55,7 @@ exports.createBooking = async (req, res) => {
 
     res.send({ message: "Booking created successfully.", booking: booking });
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while creating the booking." });
+    next(new ErrorResponse("An error occurred while creating the booking.", 500));
   }
 };
 
@@ -68,6 +70,7 @@ exports.createBooking = async (req, res) => {
  * @param {Object} req.body - Request body containing updated booking data.
  * @param {string[]} req.body.userIds - Array containing the IDs of users to associate with the booking.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while updating the booking.
  *
@@ -86,7 +89,7 @@ exports.createBooking = async (req, res) => {
  * };
  * await updateBooking(req, res);
  */
-exports.updateBooking = async (req, res) => {
+exports.updateBooking = async (req, res, next) => {
   const bookingId = req.params.bookingId;
 
   try {
@@ -104,10 +107,11 @@ exports.updateBooking = async (req, res) => {
     if (num === 1) {
       res.send({ message: "Booking updated successfully." });
     } else {
-      res.status(404).send({ message: "Unable to update the booking with the specified ID. Booking not found or empty data provided." });
+      next(new ErrorResponse("Unable to update the booking with the specified ID. Booking not found or empty data provided.", 404));
     }
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while updating the booking." });
+    next(new ErrorResponse("An error occurred while updating the booking.", 500));
+    
   }
 };
 
@@ -120,6 +124,7 @@ exports.updateBooking = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.bookingId - ID of the booking.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while deleting the booking.
  *
@@ -132,7 +137,7 @@ exports.updateBooking = async (req, res) => {
  * };
  * await deleteBooking(req, res);
  */
-exports.deleteBooking = async (req, res) => {
+exports.deleteBooking = async (req, res, next) => {
   const bookingId = req.params.bookingId;
 
   try {
@@ -141,10 +146,10 @@ exports.deleteBooking = async (req, res) => {
     if (num === 1) {
       res.send({ message: "Booking deleted successfully." });
     } else {
-      res.status(404).send({ message: "Unable to delete the booking with the specified ID. Booking not found." });
+      next(new ErrorResponse("Unable to delete the booking with the specified ID. Booking not found.", 404));
     }
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while deleting the booking." });
+    next(new ErrorResponse("An error occurred while deleting the booking.", 500));
   }
 };
 
@@ -155,6 +160,7 @@ exports.deleteBooking = async (req, res) => {
  * @function getAllBookings
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the bookings.
  *
@@ -165,7 +171,7 @@ exports.deleteBooking = async (req, res) => {
  * };
  * await getAllBookings(req, res);
  */
-exports.getAllBookings = async (req, res) => {
+exports.getAllBookings = async (req, res, next) => {
   try {
     // Retrieve all bookings from the database, including associated users
     const bookings = await Booking.findAll({
@@ -177,7 +183,7 @@ exports.getAllBookings = async (req, res) => {
 
     res.send(bookings);
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while retrieving the bookings." });
+    next(new ErrorResponse("An error occurred while retrieving the bookings.", 500));
   }
 };
 
@@ -190,10 +196,11 @@ exports.getAllBookings = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.bookingId - ID of the booking.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the booking.
  */
-exports.getBookingById = async (req, res) => {
+exports.getBookingById = async (req, res, next) => {
   const bookingId = req.params.bookingId;
 
   try {
@@ -206,12 +213,12 @@ exports.getBookingById = async (req, res) => {
     });
 
     if (!booking) {
-      return res.status(404).send({ message: "Booking not found." });
+      return next(new ErrorResponse("Booking not found.", 404));
     }
 
     res.send({ booking });
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while retrieving the booking." });
+    next(new ErrorResponse("An error occurred while retrieving the booking.", 500));
   }
 };
 
@@ -224,6 +231,7 @@ exports.getBookingById = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.bookingId - ID of the booking.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the booking or the associated users.
  *
@@ -236,19 +244,18 @@ exports.getBookingById = async (req, res) => {
  * };
  * await getUsersByBooking(req, res);
  */
-exports.getUsersByBooking = async (req, res) => {
+exports.getUsersByBooking = async (req, res, next) => {
   try {
     const bookingId = req.params.bookingId;
     const booking = await Booking.findByPk(bookingId);
 
     if (!booking) {
-      res.status(404).send({ message: "Booking not found." });
-      return;
+      return next(new ErrorResponse("Booking not found.", 404));
     }
 
     const users = await booking.getUsers();
     res.status(200).send(users);
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    next(new ErrorResponse(err.message, 500));
   }
 };

@@ -1,3 +1,4 @@
+const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
@@ -22,6 +23,7 @@ const bcrypt = require("bcryptjs");
  * @param {string} req.body.password - Password of the user.
  * @param {string[]} [req.body.roles] - Array containing the roles of the user.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {void}
  * @throws {Error} - If an error occurs while saving the user to the database.
  *
@@ -43,7 +45,7 @@ const bcrypt = require("bcryptjs");
  * };
  * signup(req, res);
  */
-exports.signup = (req, res) => {
+exports.signup = (req, res, next) => {
     User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -73,7 +75,7 @@ exports.signup = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).send({ message: err.message });
+            next(new ErrorResponse(err.message, 500));
         });
 };
 
@@ -86,6 +88,7 @@ exports.signup = (req, res) => {
  * @param {string} req.body.email - Email address of the user.
  * @param {string} req.body.password - Password of the user.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {void}
  * @throws {Error} - If an error occurs during authentication.
  *
@@ -110,7 +113,7 @@ exports.signin = (req, res) => {
     })
         .then(user => {
             if (!user) {
-                return res.status(404).send({ message: "User Not found." });
+                return next(new ErrorResponse("User Not found.", 404));
             }
 
             const passwordIsValid = bcrypt.compareSync(
@@ -147,6 +150,6 @@ exports.signin = (req, res) => {
             });
         })
         .catch(err => {
-            res.status(500).send({ message: err.message });
+            next(new ErrorResponse(err.message, 500));
         });
 };

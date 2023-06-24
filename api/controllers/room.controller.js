@@ -1,3 +1,4 @@
+const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const Room = db.room;
 const Booking = db.booking;
@@ -17,6 +18,7 @@ const User = db.user;
  * @param {string} req.body.pointOfContactEmail - Email address of the point of contact for the room.
  * @param {string} req.body.pointOfContactPhone - Phone number of the point of contact for the room.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while creating the room.
  *
@@ -36,11 +38,10 @@ const User = db.user;
  * };
  * await createRoom(req, res);
  */
-exports.createRoom = async (req, res) => {
+exports.createRoom = async (req, res, next) => {
   // Check if all required data is present
   if (!req.body.name || !req.body.image || !req.body.capacity || !req.body.floor || !req.body.pointOfContactEmail || !req.body.pointOfContactPhone) {
-    res.status(400).send({ message: "All data must be provided!" });
-    return;
+    return next(new ErrorResponse("All data must be provided!", 400));
   }
 
   // Create a new Room instance with the provided data
@@ -58,7 +59,7 @@ exports.createRoom = async (req, res) => {
     const data = await Room.create(room);
     res.send(data);
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while creating the room." });
+    next(new ErrorResponse("An error occurred while creating the room.", 500));
   }
 };
 
@@ -69,6 +70,7 @@ exports.createRoom = async (req, res) => {
  * @function getAllRooms
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the rooms.
  *
@@ -79,13 +81,15 @@ exports.createRoom = async (req, res) => {
  * };
  * await getAllRooms(req, res);
  */
-exports.getAllRooms = async (req, res) => {
+exports.getAllRooms = async (req, res, next) => {
   try {
     // Retrieve all rooms from the database
     const data = await Room.findAll();
     res.send(data);
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while retrieving the rooms." });
+    // res.status(500).send({ message: err.message || "An error occurred while retrieving the rooms." });
+    next(new ErrorResponse("An error occurred while retrieving the rooms.", 500));
+    
   }
 };
 
@@ -98,6 +102,7 @@ exports.getAllRooms = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.id - ID of the room.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the room.
  *
@@ -110,7 +115,7 @@ exports.getAllRooms = async (req, res) => {
  * };
  * await getRoomById(req, res);
  */
-exports.getRoomById = async (req, res) => {
+exports.getRoomById = async (req, res, next) => {
   const id = req.params.id;
 
   try {
@@ -119,10 +124,10 @@ exports.getRoomById = async (req, res) => {
     if (data) {
       res.send(data);
     } else {
-      res.status(404).send({ message: "Room not found with the specified ID." });
+      next(new ErrorResponse("Room not found with the specified ID.", 404));
     }
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while retrieving the room." });
+    next(new ErrorResponse("An error occurred while retrieving the room.", 500));
   }
 };
 
@@ -136,6 +141,7 @@ exports.getRoomById = async (req, res) => {
  * @param {string} req.params.id - ID of the room.
  * @param {Object} req.body - Request body containing updated room data.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while updating the room.
  *
@@ -152,7 +158,7 @@ exports.getRoomById = async (req, res) => {
  * };
  * await updateRoom(req, res);
  */
-exports.updateRoom = async (req, res) => {
+exports.updateRoom = async (req, res, next) => {
   const id = req.params.id;
 
   try {
@@ -161,10 +167,10 @@ exports.updateRoom = async (req, res) => {
     if (num == 1) {
       res.send({ message: "Room updated successfully." });
     } else {
-      res.status(404).send({ message: `Unable to update the room with the specified ID. Room not found or empty data provided.` });
+      next(new ErrorResponse(`Unable to update the room with the specified ID. Room not found or empty data provided.`, 404));
     }
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while updating the room." });
+    next(new ErrorResponse("An error occurred while updating the room.", 500));
   }
 };
 
@@ -177,6 +183,7 @@ exports.updateRoom = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.id - ID of the room.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while deleting the room.
  *
@@ -189,7 +196,7 @@ exports.updateRoom = async (req, res) => {
  * };
  * await deleteRoom(req, res);
  */
-exports.deleteRoom = async (req, res) => {
+exports.deleteRoom = async (req, res, next) => {
   const id = req.params.id;
 
   try {
@@ -198,10 +205,10 @@ exports.deleteRoom = async (req, res) => {
     if (num == 1) {
       res.send({ message: "Room deleted successfully." });
     } else {
-      res.status(404).send({ message: `Unable to delete the room with the specified ID. Room not found.` });
+      next(new ErrorResponse(`Unable to delete the room with the specified ID. Room not found.`, 404));
     }
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while deleting the room." });
+    next(new ErrorResponse("An error occurred while deleting the room.", 500));
   }
 };
 
@@ -214,6 +221,7 @@ exports.deleteRoom = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.roomId - ID of the room.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the bookings.
  *
@@ -226,7 +234,7 @@ exports.deleteRoom = async (req, res) => {
  * };
  * await getBookingsByRoomId(req, res);
  */
-exports.getBookingsByRoomId = async (req, res) => {
+exports.getBookingsByRoomId = async (req, res, next) => {
   const roomId = req.params.roomId;
 
   try {
@@ -239,6 +247,6 @@ exports.getBookingsByRoomId = async (req, res) => {
     });
     res.send(bookings);
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while retrieving the bookings." });
+    next(new ErrorResponse("An error occurred while retrieving the bookings.", 500));
   }
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
@@ -25,6 +26,8 @@ require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 require('./routes/room.routes')(app);
 require('./routes/booking.routes')(app);
+
+app.use(errorHandler);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -66,7 +69,7 @@ function initial() {
     firstName: "Quentin",
     lastName: "Vannarath",
     email: "admin@smart.com",
-    position: "Developer",
+    position: "developer",
     picture: "profile.jpg",
     password: hashedPassword,
   }).then(user => {

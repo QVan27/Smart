@@ -1,6 +1,6 @@
+const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const User = db.user;
-const Booking = db.booking;
 const bcrypt = require("bcryptjs");
 
 exports.allAccess = (req, res) => {
@@ -26,19 +26,20 @@ exports.moderatorBoard = (req, res) => {
  * @function getUsers
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the users.
  *
  * @example
  * getUsers(req, res);
  */
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (req, res, next) => {
     try {
         const users = await User.findAll();
 
         res.status(200).send(users);
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        next(new ErrorResponse(err.message, 500));
     }
 }
 
@@ -51,24 +52,24 @@ exports.getUsers = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.id - ID of the user to retrieve.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
  *
  * @example
  * getUserById(req, res);
  */
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id);
 
         if (!user) {
-            res.status(404).send({ message: "User does not exist!" });
-            return;
+            return next(new ErrorResponse("User does not exist!", 404));
         }
 
         res.status(200).send(user);
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        next(new ErrorResponse(err.message, 500));
     }
 }
 
@@ -81,25 +82,25 @@ exports.getUserById = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.id - ID of the user to delete.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
  *
  * @example
  * deleteUser(req, res);
  */
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id);
 
         if (!user) {
-            res.status(404).send({ message: "User does not exist!" });
-            return;
+            return next(new ErrorResponse("User does not exist!", 404));
         }
 
         await user.destroy();
         res.status(200).send({ message: "User deleted successfully!" });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        next(new ErrorResponse(err.message, 500));
     }
 }
 
@@ -116,6 +117,7 @@ exports.deleteUser = async (req, res) => {
  * @param {string} [req.body.email] - Updated email address of the user.
  * @param {string} [req.body.password] - Updated password of the user.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
  *
@@ -139,14 +141,13 @@ exports.updateUser = async (req, res) => {
         const user = await User.findByPk(req.params.id);
 
         if (!user) {
-            res.status(404).send({ message: "User does not exist!" });
-            return;
+            return next(new ErrorResponse("User does not exist!", 404));
         }
 
         await user.update(req.body);
         res.status(200).send({ message: "User updated successfully!" });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        next(new ErrorResponse(err.message, 500));
     }
 }
 
@@ -159,6 +160,7 @@ exports.updateUser = async (req, res) => {
  * @param {Object} req.params - Request parameters.
  * @param {string} req.params.id - ID of the user to retrieve the bookings for.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
  *
@@ -179,14 +181,13 @@ exports.getUserBookings = async (req, res) => {
         });
 
         if (!user) {
-            res.status(404).send({ message: "User does not exist!" });
-            return;
+            return next(new ErrorResponse("User does not exist!", 404));
         }
 
         const bookings = user.bookings;
         res.status(200).send(bookings);
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        next(new ErrorResponse(err.message, 500));
     }
 };
 
@@ -197,6 +198,7 @@ exports.getUserBookings = async (req, res) => {
  * @function getSessionUserBookings
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the user's bookings.
  *
@@ -212,13 +214,12 @@ exports.getUserBookings = async (req, res) => {
       });
   
       if (!user) {
-        res.status(404).send({ message: "User does not exist!" });
-        return;
+        return next(new ErrorResponse("User does not exist!", 404));
       }
   
       const bookings = user.bookings;
       res.status(200).send(bookings);
     } catch (err) {
-      res.status(500).send({ message: err.message });
+      next(new ErrorResponse(err.message, 500));
     }
   };
