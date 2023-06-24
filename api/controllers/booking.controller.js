@@ -35,7 +35,7 @@ const User = db.user;
  * };
  * await createBooking(req, res);
  */
- exports.createBooking = async (req, res) => {
+exports.createBooking = async (req, res) => {
   const { startDate, endDate, purpose, roomId, isModerator = false, userIds = [] } = req.body;
 
   if (!roomId) {
@@ -86,7 +86,7 @@ const User = db.user;
  * };
  * await updateBooking(req, res);
  */
- exports.updateBooking = async (req, res) => {
+exports.updateBooking = async (req, res) => {
   const bookingId = req.params.bookingId;
 
   try {
@@ -216,34 +216,39 @@ exports.getBookingById = async (req, res) => {
 };
 
 /**
- * Retrieves all bookings belonging to a room.
+ * Retrieves all users associated with a booking.
  *
  * @async
- * @function getBookingsByRoomId
+ * @function getUsersByBooking
  * @param {Object} req - Express request object.
  * @param {Object} req.params - Request parameters.
- * @param {string} req.params.roomId - ID of the room.
+ * @param {string} req.params.bookingId - ID of the booking.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
- * @throws {Error} - If an error occurs while retrieving the bookings.
+ * @throws {Error} - If an error occurs while retrieving the booking or the associated users.
  *
  * @example
- * const roomId = "123456";
- * const req = { params: { roomId: roomId } };
+ * const bookingId = "123456";
+ * const req = { params: { bookingId: bookingId } };
  * const res = {
  *     send: function(data) { console.log(data); },
  *     status: function(code) { return this; }
  * };
- * await getBookingsByRoomId(req, res);
+ * await getUsersByBooking(req, res);
  */
-exports.getBookingsByRoomId = async (req, res) => {
-  const roomId = req.params.roomId;
-
+exports.getUsersByBooking = async (req, res) => {
   try {
-    // Retrieve all bookings belonging to a room from the database
-    const bookings = await Booking.findAll({ where: { roomId: roomId } });
-    res.send(bookings);
+    const bookingId = req.params.bookingId;
+    const booking = await Booking.findByPk(bookingId);
+
+    if (!booking) {
+      res.status(404).send({ message: "Booking not found." });
+      return;
+    }
+
+    const users = await booking.getUsers();
+    res.status(200).send(users);
   } catch (err) {
-    res.status(500).send({ message: err.message || "An error occurred while retrieving the bookings." });
+    res.status(500).send({ message: err.message });
   }
 };

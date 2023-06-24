@@ -1,5 +1,7 @@
 const db = require("../models");
 const Room = db.room;
+const Booking = db.booking;
+const User = db.user;
 
 /**
  * Creates a new room.
@@ -200,5 +202,43 @@ exports.deleteRoom = async (req, res) => {
     }
   } catch (err) {
     res.status(500).send({ message: err.message || "An error occurred while deleting the room." });
+  }
+};
+
+/**
+ * Retrieves all bookings belonging to a room.
+ *
+ * @async
+ * @function getBookingsByRoomId
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.roomId - ID of the room.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the bookings.
+ *
+ * @example
+ * const roomId = "123456";
+ * const req = { params: { roomId: roomId } };
+ * const res = {
+ *     send: function(data) { console.log(data); },
+ *     status: function(code) { return this; }
+ * };
+ * await getBookingsByRoomId(req, res);
+ */
+exports.getBookingsByRoomId = async (req, res) => {
+  const roomId = req.params.roomId;
+
+  try {
+    // Retrieve all bookings belonging to a room from the database
+    const bookings = await Booking.findAll({
+      where: { roomId: roomId }, include: {
+        model: User,
+        attributes: ['id', 'position', 'picture', 'email'] // Include specific user attributes you want to fetch
+      }
+    });
+    res.send(bookings);
+  } catch (err) {
+    res.status(500).send({ message: err.message || "An error occurred while retrieving the bookings." });
   }
 };

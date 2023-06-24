@@ -39,4 +39,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.deleteRoom
     );
+
+    app.get(
+        "/api/rooms/:roomId/bookings",
+        [authJwt.verifyToken],
+        controller.getBookingsByRoomId
+    );
 };

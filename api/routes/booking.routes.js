@@ -41,8 +41,8 @@ module.exports = function (app) {
     );
 
     app.get(
-        "/api/rooms/:roomId/bookings",
+        "/api/bookings/:bookingId/users",
         [authJwt.verifyToken],
-        controller.getBookingsByRoomId
+        controller.getUsersByBooking
     );
 };
