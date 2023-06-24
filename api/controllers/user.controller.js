@@ -2,8 +2,6 @@ const db = require("../models");
 const User = db.user;
 const bcrypt = require("bcryptjs");
 
-// This code defines functions for each of the different types of users. Each user type is given a different level of access to the site's content. For example, an admin user can access all content on the site, whereas a regular user can only access content that is not restricted to admins.
-
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
 };
@@ -20,20 +18,19 @@ exports.moderatorBoard = (req, res) => {
     res.status(200).send("Moderator Content.");
 };
 
-// This code is used to get all users from the database, get a single user by their id, delete a user, and update a user in the database.
-// The code uses the User model from the database, and the bcrypt library to hash the user's password if it is sent in the request.
-
 /**
-Retrieves all users from the database.
-@async
-@function getUsers
-@param {Object} req - Express request object.
-@param {Object} res - Express response object.
-@returns {Promise<void>} - A Promise that resolves with no value upon completion.
-@throws {Error} - If an error occurs while retrieving the users.
-@example
-getUsers(req, res);
-*/
+ * Retrieves all users from the database.
+ *
+ * @async
+ * @function getUsers
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the users.
+ *
+ * @example
+ * getUsers(req, res);
+ */
 exports.getUsers = async (req, res) => {
     try {
         const users = await User.findAll();
@@ -45,16 +42,20 @@ exports.getUsers = async (req, res) => {
 }
 
 /**
-Retrieves a user by their ID from the database.
-@async
-@function getUserById
-@param {Object} req - Express request object.
-@param {Object} res - Express response object.
-@returns {Promise<void>} - A Promise that resolves with no value upon completion.
-@throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
-@example
-getUserById(req, res);
-*/
+ * Retrieves a user by their ID from the database.
+ *
+ * @async
+ * @function getUserById
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the user to retrieve.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
+ *
+ * @example
+ * getUserById(req, res);
+ */
 exports.getUserById = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
@@ -71,16 +72,20 @@ exports.getUserById = async (req, res) => {
 }
 
 /**
-Deletes a user from the database.
-@async
-@function deleteUser
-@param {Object} req - Express request object.
-@param {Object} res - Express response object.
-@returns {Promise<void>} - A Promise that resolves with no value upon completion.
-@throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
-@example
-deleteUser(req, res);
-*/
+ * Deletes a user from the database.
+ *
+ * @async
+ * @function deleteUser
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the user to delete.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
+ *
+ * @example
+ * deleteUser(req, res);
+ */
 exports.deleteUser = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
@@ -103,6 +108,12 @@ exports.deleteUser = async (req, res) => {
  * @async
  * @function updateUser
  * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the user to update.
+ * @param {Object} req.body - Request body containing updated user data.
+ * @param {string} [req.body.name] - Updated name of the user.
+ * @param {string} [req.body.email] - Updated email address of the user.
+ * @param {string} [req.body.password] - Updated password of the user.
  * @param {Object} res - Express response object.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
  * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
