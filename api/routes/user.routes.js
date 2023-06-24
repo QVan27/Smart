@@ -49,4 +49,6 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         controller.updateUser
     );
+
+    app.get('/api/users/:id/bookings', [authJwt.verifyToken], controller.getUserBookings);
 };

@@ -1,5 +1,6 @@
 const db = require("../models");
 const User = db.user;
+const Booking = db.booking;
 const bcrypt = require("bcryptjs");
 
 exports.allAccess = (req, res) => {
@@ -148,3 +149,43 @@ exports.updateUser = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 }
+
+/**
+ * Retrieves the bookings associated with a user from the database.
+ *
+ * @async
+ * @function getUserBookings
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.id - ID of the user to retrieve the bookings for.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while retrieving the user or if the user does not exist.
+ *
+ * @example
+ * const req = {
+ *   params: { id: "123" },
+ * };
+ * const res = {
+ *   status: function(code) { return this; },
+ *   send: function(data) { console.log(data); }
+ * };
+ * await getUserBookings(req, res);
+ */
+exports.getUserBookings = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id, {
+            include: ["bookings"],
+        });
+
+        if (!user) {
+            res.status(404).send({ message: "User does not exist!" });
+            return;
+        }
+
+        const bookings = user.bookings;
+        res.status(200).send(bookings);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+};
