@@ -13,6 +13,14 @@ const bcrypt = require("bcryptjs");
  *
  * @function signup
  * @param {Object} req - Express request object.
+ * @param {Object} req.body - Request body containing user data.
+ * @param {string} req.body.firstName - First name of the user.
+ * @param {string} req.body.lastName - Last name of the user.
+ * @param {string} req.body.email - Email address of the user.
+ * @param {string} req.body.position - Position of the user.
+ * @param {string} req.body.picture - Picture of the user.
+ * @param {string} req.body.password - Password of the user.
+ * @param {string[]} [req.body.roles] - Array containing the roles of the user.
  * @param {Object} res - Express response object.
  * @returns {void}
  * @throws {Error} - If an error occurs while saving the user to the database.
@@ -26,7 +34,7 @@ const bcrypt = require("bcryptjs");
  *         position: "Developer",
  *         picture: "profile.jpg",
  *         password: "password123",
- *         roles: ["moderator", "user"]
+ *         roles: ["MODERATOR", "USER"]
  *     }
  * };
  * const res = {
@@ -74,6 +82,9 @@ exports.signup = (req, res) => {
  *
  * @function signin
  * @param {Object} req - Express request object.
+ * @param {Object} req.body - Request body containing user credentials.
+ * @param {string} req.body.email - Email address of the user.
+ * @param {string} req.body.password - Password of the user.
  * @param {Object} res - Express response object.
  * @returns {void}
  * @throws {Error} - If an error occurs during authentication.
@@ -102,7 +113,7 @@ exports.signin = (req, res) => {
                 return res.status(404).send({ message: "User Not found." });
             }
 
-            var passwordIsValid = bcrypt.compareSync(
+            const passwordIsValid = bcrypt.compareSync(
                 req.body.password,
                 user.password
             );
@@ -114,11 +125,11 @@ exports.signin = (req, res) => {
                 });
             }
 
-            var token = jwt.sign({ id: user.id }, config.secret, {
+            const token = jwt.sign({ id: user.id }, config.secret, {
                 expiresIn: 86400 // 24 hours
             });
 
-            var authorities = [];
+            const authorities = [];
             user.getRoles().then(roles => {
                 for (let i = 0; i < roles.length; i++) {
                     authorities.push("ROLE_" + roles[i].name.toUpperCase());
