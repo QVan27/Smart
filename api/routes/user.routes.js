@@ -10,47 +10,15 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/api/test/all", controller.allAccess);
+    // app.get("/api/test/all", controller.allAccess);
+    // app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+    // app.get("/api/test/moderator", [authJwt.verifyToken, authJwt.isModerator], controller.moderatorBoard);
+    // app.get("/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
 
-    app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
-
-    app.get(
-        "/api/test/moderator",
-        [authJwt.verifyToken, authJwt.isModerator],
-        controller.moderatorBoard
-    );
-
-    app.get(
-        "/api/test/admin",
-        [authJwt.verifyToken, authJwt.isAdmin],
-        controller.adminBoard
-    );
-
-    app.get(
-        "/api/users",
-        [authJwt.verifyToken],
-        controller.getUsers
-    )
-
-    app.get(
-        "/api/users/:id",
-        [authJwt.verifyToken],
-        controller.getUserById
-    );
-
-    app.delete(
-        "/api/users/:id",
-        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-        controller.deleteUser
-    );
-
-    app.put(
-        "/api/users/:id",
-        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-        controller.updateUser
-    );
-
+    app.get("/api/users", [authJwt.verifyToken], controller.getUsers)
+    app.get("/api/users/:id", [authJwt.verifyToken], controller.getUserById);
     app.get('/api/users/:id/bookings', [authJwt.verifyToken], controller.getUserBookings);
     app.get('/api/user/bookings', [authJwt.verifyToken], controller.getSessionUserBookings);
-
+    app.put("/api/users/:id", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.updateUser);
+    app.delete("/api/users/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteUser);
 };

@@ -10,40 +10,11 @@ module.exports = function (app) {
         next();
     });
 
-    app.get(
-        "/api/bookings",
-        [authJwt.verifyToken],
-        controller.getAllBookings
-    );
-
-    app.get(
-        "/api/bookings/:bookingId",
-        [authJwt.verifyToken],
-        controller.getBookingById
-    );
-
-    app.post(
-        "/api/bookings",
-        [authJwt.verifyToken],
-        controller.createBooking
-    );
-
-    app.put(
-        "/api/bookings/:bookingId",
-        [authJwt.verifyToken],
-        controller.updateBooking
-    );
-
-    app.delete(
-        "/api/bookings/:bookingId",
-        [authJwt.verifyToken],
-        controller.deleteBooking
-    );
-
-    app.get(
-        "/api/bookings/:bookingId/users",
-        [authJwt.verifyToken],
-        controller.getUsersByBooking
-    );
+    app.get("/api/bookings", [authJwt.verifyToken], controller.getAllBookings);
+    app.get("/api/bookings/:bookingId", [authJwt.verifyToken], controller.getBookingById);
+    app.get("/api/bookings/:bookingId/users", [authJwt.verifyToken], controller.getUsersByBooking);
+    app.post("/api/bookings", [authJwt.verifyToken], controller.createBooking);
+    app.put("/api/bookings/:bookingId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.updateBooking);
     app.put('/api/bookings/:bookingId/approve', [authJwt.verifyToken, authJwt.isModerator], controller.approveBooking);
+    app.delete("/api/bookings/:bookingId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.deleteBooking);
 };

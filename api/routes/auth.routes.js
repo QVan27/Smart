@@ -9,13 +9,8 @@ module.exports = function (app) {
     );
     next();
   });
-  app.post("/api/auth/signup",
-    [
-      verifySignUp.checkDuplicateEmail,
-      verifySignUp.checkRolesExisted
-    ],
-    controller.signup
-  );
+
+  app.post("/api/auth/signup", [verifySignUp.checkDuplicateEmail, verifySignUp.checkRolesExisted], controller.signup);
   app.post("/api/auth/signin", controller.signin);
   app.post("/api/auth/logout", authJwt.verifyToken, controller.logout);
 };

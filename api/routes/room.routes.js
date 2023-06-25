@@ -10,39 +10,10 @@ module.exports = function (app) {
         next();
     });
 
-    app.get(
-        "/api/rooms",
-        [authJwt.verifyToken],
-        controller.getAllRooms
-    );
-
-    app.get(
-        "/api/rooms/:id",
-        [authJwt.verifyToken],
-        controller.getRoomById
-    );
-
-    app.post(
-        "/api/rooms",
-        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-        controller.createRoom
-    );
-
-    app.put(
-        "/api/rooms/:id",
-        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-        controller.updateRoom
-    );
-
-    app.delete(
-        "/api/rooms/:id",
-        [authJwt.verifyToken, authJwt.isAdmin],
-        controller.deleteRoom
-    );
-
-    app.get(
-        "/api/rooms/:roomId/bookings",
-        [authJwt.verifyToken],
-        controller.getBookingsByRoomId
-    );
+    app.get("/api/rooms", [authJwt.verifyToken], controller.getAllRooms);
+    app.get("/api/rooms/:id", [authJwt.verifyToken], controller.getRoomById);
+    app.get("/api/rooms/:roomId/bookings", [authJwt.verifyToken], controller.getBookingsByRoomId);
+    app.post("/api/rooms", [authJwt.verifyToken, authJwt.isAdmin], controller.createRoom);
+    app.put("/api/rooms/:id", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.updateRoom);
+    app.delete("/api/rooms/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteRoom);
 };
