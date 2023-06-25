@@ -62,8 +62,11 @@ function initial() {
   });
 
   const bcrypt = require("bcryptjs");
-  const password = "password123";
-  const hashedPassword = bcrypt.hashSync(password, 8);
+  const passwordAdmin = "admin";
+  const passwordModerator = "moderator";
+
+  const hashedPasswordAdmin = bcrypt.hashSync(passwordAdmin, 8);
+  const hashedPasswordModerator = bcrypt.hashSync(passwordModerator, 8);
 
   User.create({
     id: 1,
@@ -72,7 +75,7 @@ function initial() {
     email: "admin@smart.com",
     position: "developer",
     picture: "profile.jpg",
-    password: hashedPassword,
+    password: hashedPasswordAdmin,
   }).then(user => {
     Role.findOne({ where: { name: "ADMIN" } }).then(role => {
       user.setRoles([role]).then(() => {
@@ -88,7 +91,7 @@ function initial() {
     email: "moderator@smart.com",
     position: "developer",
     picture: "profile.jpg",
-    password: hashedPassword,
+    password: hashedPasswordModerator,
   }).then(user => {
     Role.findOne({ where: { name: "MODERATOR" } }).then(role => {
       user.setRoles([role]).then(() => {
