@@ -13,7 +13,7 @@ module.exports = {
         endDate: faker.date.future(),
         purpose: faker.word.words(5),
         roomId: room.id,
-        isModerator: faker.datatype.boolean(),
+        isApproved: false,
         createdAt: new Date(),
         updatedAt: new Date(),
       }));
@@ -40,6 +40,13 @@ module.exports = {
         }));
 
         await queryInterface.bulkInsert('user_bookings', bookingUserAssociations, {});
+
+        if (faker.datatype.boolean()) {
+          await queryInterface.sequelize.query("UPDATE bookings SET isApproved = true WHERE id = :id", {
+            replacements: { id: createdBooking.id },
+            type: queryInterface.sequelize.QueryTypes.UPDATE
+          });
+        }
       }
     }
   },

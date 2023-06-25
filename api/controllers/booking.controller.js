@@ -111,7 +111,7 @@ exports.updateBooking = async (req, res, next) => {
     }
   } catch (err) {
     next(new ErrorResponse("An error occurred while updating the booking.", 500));
-    
+
   }
 };
 
@@ -257,5 +257,55 @@ exports.getUsersByBooking = async (req, res, next) => {
     res.status(200).send(users);
   } catch (err) {
     next(new ErrorResponse(err.message, 500));
+  }
+};
+
+/**
+ * Approves a booking by its ID (available only for moderator users).
+ *
+ * @async
+ * @function approveBooking
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.bookingId - ID of the booking.
+ * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while approving the booking.
+ */
+exports.approveBooking = async (req, res, next) => {
+  const bookingId = req.params.bookingId;
+
+  try {
+    const booking = await Booking.findByPk(bookingId);
+
+    if (!booking) {
+      return next(new ErrorResponse("Booking not found.", 404));
+    }
+
+    User.findByPk(req.userId).then(user => {
+      user.getRoles().then(roles => {
+        let isModerator = false;
+        for (let i = 0; i < roles.length; i++) {
+          if (roles[i].name === "MODERATOR") {
+            isModerator = true;
+            break;
+          }
+        }
+
+        if (!isModerator) {
+          return next(new ErrorResponse("You are not authorized to approve bookings.", 403));
+        }
+
+        booking.isApproved = true;
+        booking.save().then(() => {
+          res.send({ message: "Booking approved successfully." });
+        }).catch(err => {
+          next(new ErrorResponse("An error occurred while approving the booking.", 500));
+        });
+      });
+    });
+  } catch (err) {
+    next(new ErrorResponse("An error occurred while approving the booking.", 500));
   }
 };

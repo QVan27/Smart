@@ -45,4 +45,5 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getUsersByBooking
     );
+    app.put('/api/bookings/:bookingId/approve', [authJwt.verifyToken, authJwt.isModerator], controller.approveBooking);
 };

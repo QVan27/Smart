@@ -205,21 +205,21 @@ exports.getUserBookings = async (req, res) => {
  * @example
  * getSessionUserBookings(req, res);
  */
- exports.getSessionUserBookings = async (req, res) => {
+exports.getSessionUserBookings = async (req, res) => {
     try {
-      const userId = req.userId; // Assuming the authenticated user's ID is available in the request object (req.userId)
-  
-      const user = await User.findByPk(userId, {
-        include: "bookings",
-      });
-  
-      if (!user) {
-        return next(new ErrorResponse("User does not exist!", 404));
-      }
-  
-      const bookings = user.bookings;
-      res.status(200).send(bookings);
+        const userId = req.userId; // Assuming the authenticated user's ID is available in the request object (req.userId)
+
+        const user = await User.findByPk(userId, {
+            include: "bookings",
+        });
+
+        if (!user) {
+            return next(new ErrorResponse("User does not exist!", 404));
+        }
+
+        const bookings = user.bookings;
+        res.status(200).send(bookings);
     } catch (err) {
-      next(new ErrorResponse(err.message, 500));
+        next(new ErrorResponse(err.message, 500));
     }
-  };
+};

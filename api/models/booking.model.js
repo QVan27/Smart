@@ -17,10 +17,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        isModerator: {
+        isApproved: {
             type: Sequelize.BOOLEAN,
-            defaultValue: false
-        }
+            defaultValue: false,
+        },
     });
 
     return Booking;

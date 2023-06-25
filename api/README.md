@@ -319,3 +319,13 @@ REST API
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `x-access-token` | `string` | **Required**. Your access token |
+
+### Approves a booking by its ID (available only for moderator users)
+
+```http
+  PUT api/bookings/{id}/approve
+```
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `x-access-token` | `string` | **Required**. Your access token |
+| `role` | `int` | **Required**. Moderator |
