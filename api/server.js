@@ -80,4 +80,20 @@ function initial() {
       });
     });
   });
+
+  User.create({
+    id: 2,
+    firstName: "John",
+    lastName: "Doe",
+    email: "moderator@smart.com",
+    position: "developer",
+    picture: "profile.jpg",
+    password: hashedPassword,
+  }).then(user => {
+    Role.findOne({ where: { name: "MODERATOR" } }).then(role => {
+      user.setRoles([role]).then(() => {
+        console.log("Initial user with MODERATOR role created successfully.");
+      });
+    });
+  });
 }
