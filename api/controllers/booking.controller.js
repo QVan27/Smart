@@ -38,7 +38,7 @@ const User = db.user;
  * await createBooking(req, res);
  */
 exports.createBooking = async (req, res, next) => {
-  const { startDate, endDate, purpose, roomId, isModerator = false, userIds = [] } = req.body;
+  const { startDate, endDate, purpose, roomId, isApproved = false, userIds = [] } = req.body;
 
   if (!roomId) {
     return next(new ErrorResponse("roomId cannot be null.", 400));
@@ -46,7 +46,7 @@ exports.createBooking = async (req, res, next) => {
 
   try {
     // Create a new booking in the database
-    const booking = await Booking.create({ startDate, endDate, purpose, roomId, isModerator });
+    const booking = await Booking.create({ startDate, endDate, purpose, roomId, isApproved });
 
     // Associate the users with the booking
     if (userIds.length > 0) {
