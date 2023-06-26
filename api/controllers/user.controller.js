@@ -134,7 +134,7 @@ exports.deleteUser = async (req, res, next) => {
  * };
  * await updateUser(req, res);
  */
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
     try {
         if (req.body.password) req.body.password = bcrypt.hashSync(req.body.password, 8);
 
@@ -174,7 +174,7 @@ exports.updateUser = async (req, res) => {
  * };
  * await getUserBookings(req, res);
  */
-exports.getUserBookings = async (req, res) => {
+exports.getUserBookings = async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id, {
             include: ["bookings"],
@@ -205,7 +205,7 @@ exports.getUserBookings = async (req, res) => {
  * @example
  * getSessionUserBookings(req, res);
  */
-exports.getSessionUserBookings = async (req, res) => {
+exports.getSessionUserBookings = async (req, res, next) => {
     try {
         const userId = req.userId; // Assuming the authenticated user's ID is available in the request object (req.userId)
 

@@ -105,7 +105,7 @@ exports.signup = (req, res, next) => {
  * };
  * signin(req, res);
  */
-exports.signin = (req, res) => {
+exports.signin = (req, res, next) => {
     User.findOne({
         where: {
             email: req.body.email
