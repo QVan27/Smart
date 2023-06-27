@@ -10,7 +10,10 @@ export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/auth/signin');
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (accessToken) router.push('/');
+    else router.push('/auth/signin');
   }, []);
 
   const renderWithLayout = Component.getLayout || (() => <Layout>
