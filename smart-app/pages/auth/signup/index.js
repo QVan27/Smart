@@ -2,10 +2,7 @@ import AuthLayout from '@components/layouts/AuthLayout'
 import styled from 'styled-components'
 import { Orbitron } from 'next/font/google'
 import Image from 'next/image'
-import Link from 'next/link'
 import Wrap from '@components/Wrap'
-
-
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -33,22 +30,13 @@ const SubTitle = styled.h2`
   font-weight: 700;
 `;
 
-const Redirect = styled.p`
-  margin-top: 2.94rem;
-  color: #adadad;
-  font-size: 0.875rem;
-  font-weight: 500;
-
-  a { text-decoration: underline; }
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   width: min(100%, 400px);
 
   input {
-    margin-bottom: 2.94rem;
+    margin-bottom: 1.87rem;
     background-color: transparent;
     border: none;
     border-bottom: 1px solid var(--secondary-text);
@@ -81,30 +69,30 @@ const Form = styled.form`
     }
 `;
 
-export default function Signup() {
+export default function SignUp() {
 
   return (
     <Wrap>
       <Container>
         <div>
-          <Image src="/astro-connect.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
+          <Image src="/astro-signin.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
           <Title className={orbitron.className}>Smart</Title>
         </div>
-        <SubTitle>Connectez votre compte</SubTitle>
+        <SubTitle>Créer votre compte</SubTitle>
         <Form action="api/auth/signup" method="post">
+          <input type="text" id="firstName" name="firstName" placeholder="Prénom" required />
+          <input type="text" id="lastName" name="lastName" placeholder="Nom" required />
           <input type="text" id="email" name="email" placeholder="Email" required />
+          <input type="text" id="position" name="position" placeholder="Position" required />
           <input type="password" id="password" name="password" placeholder="Mot de passe" required />
-          <button type="submit">Se connecter</button>
+          <button type="submit">S'inscrire</button>
         </Form>
-        <Redirect>
-          Ou créer <Link href="/auth/signin">votre comptre</Link>
-        </Redirect>
       </Container>
     </Wrap>
   )
 }
 
-Signup.getLayout = function (page) {
+SignUp.getLayout = function (page) {
   return (
     <AuthLayout>
       {page}
