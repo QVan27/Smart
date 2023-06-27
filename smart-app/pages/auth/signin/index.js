@@ -4,8 +4,8 @@ import { Orbitron } from 'next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 import Wrap from '@components/Wrap'
-
-
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -82,6 +82,42 @@ const Form = styled.form`
 `;
 
 export default function SignIn() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        localStorage.setItem('accessToken', data.accessToken);
+        router.push('/');
+      } else {
+        console.log('Échec de la connexion.');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la requête de connexion:', error);
+    }
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
 
   return (
     <Wrap>
@@ -91,9 +127,23 @@ export default function SignIn() {
           <Title className={orbitron.className}>Smart</Title>
         </div>
         <SubTitle>Connectez votre compte</SubTitle>
-        <Form action="api/auth/signup" method="post">
-          <input type="text" id="email" name="email" placeholder="Email" required />
-          <input type="password" id="password" name="password" placeholder="Mot de passe" required />
+        <Form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            placeholder="Email"
+            value={email}
+            onChange={handleEmailChange}
+            required />
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Mot de passe"
+            value={password}
+            onChange={handlePasswordChange}
+            required />
           <button type="submit">Se connecter</button>
         </Form>
         <Redirect>
