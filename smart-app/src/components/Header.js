@@ -35,6 +35,7 @@ const Container = styled.header`
       display: flex;
       align-items: center;
       height: 1.25rem;
+      cursor: pointer;
 
       &.active {
         span {
@@ -177,19 +178,29 @@ const SideBar = styled.div`
 const List = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 1.56rem;
+  gap: 1.16rem;
   color: var(--primary-text);
 
   li {
     display: flex;
     align-items: center;
     gap: 0.625rem;
+    padding: 0.3125rem;
+    border-radius: 5px;
+    transition: all 0.3s ease-out;
 
     &.active {
-      padding: 0.3125rem;
-      border-radius: 5px;
       background: rgba(255, 99, 0, 0.25);
       color: var(--accident);
+    }
+
+    @media screen and (hover: hover) {
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 99, 0, 0.25);
+        color: var(--accident);
+      }
     }
 
     svg {
@@ -258,7 +269,8 @@ export default function Header() {
 
   const userRoles = userInfo?.roles;
   const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
-
+  const fullName = userInfo?.firstName + " " + userInfo?.lastName;
+  
   return (
     <>
       <Container className={nunito.className}>
@@ -270,6 +282,9 @@ export default function Header() {
             <div className='header__text'>
               {router.pathname === "/" && (
                 <span>Réunions</span>
+              )}
+              {router.pathname === "/settings" && (
+                <span>{fullName}</span>
               )}
             </div>
           </div>
@@ -295,7 +310,7 @@ export default function Header() {
             {showManagerLink && (
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>
             )}
-            <li><Icon icon="material-symbols:settings" /><Link href='/bookings'>Paramètres</Link></li>
+            <li className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
           </List>
         </div>
       </SideBar>
