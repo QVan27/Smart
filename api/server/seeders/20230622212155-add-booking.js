@@ -11,7 +11,7 @@ module.exports = {
       const bookings = Array.from({ length: 10 }).map(() => ({
         startDate: faker.date.future(),
         endDate: faker.date.future(),
-        purpose: faker.helpers.arrayElement([`Stratégies d'expérience utilisateur pour les développeurs`, `Optimisation de l'interface utilisateur : une approche multidisciplinaire`, 'Gestion de projet agile pour le design et le développement', 'Réunion de coordination : alignement entre le management et les développeurs', 'Design thinking et développement : fusionner les perspectives', 'Améliorer la collaboration entre le design et le développement', 'Tendances UX/UI : Impacts et opportunités pour les développeurs', 'Leadership dans le domaine du design et du développement', 'Innovation par le design et la technologie : une rencontre cruciale', `Évaluation des performances : alignement entre l'UI/UX et les développeurs`]),
+        purpose: faker.helpers.arrayElement(['UX/UI et Développement : Synergies créatives', 'Agilité et Collaboration : Design + Dev', 'Stratégies UX pour les Développeurs', 'Alignement Design/Dev : Réunion de Coordination', 'Innovation Technologique et Expérience Utilisateur', 'Optimisation UI/UX : Actions Concrètes', `Design et Développement : Ensemble vers l'Excellence`, 'Leadership en Design & Développement', 'Convergence Design/Dev : Tendances et Opportunités', 'Évaluer la Performance : UI/UX & Développement']),
         roomId: room.id,
         isApproved: false,
         createdAt: new Date(),

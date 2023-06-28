@@ -65,7 +65,6 @@ const BookingCard = styled.div`
     p {
       font-size: 0.875rem;
       font-weight: 600;
-      text-transform: capitalize;
       max-width: 80%;
     }
 
