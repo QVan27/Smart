@@ -145,7 +145,7 @@ const SideBar = styled.div`
       overflow: hidden;
       width: 5rem;
       height: 5rem;
-      box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+      box-shadow: var(--secondary-shadow);
 
       img {
         width: 100%;
@@ -270,7 +270,7 @@ export default function Header() {
   const userRoles = userInfo?.roles;
   const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
   const fullName = userInfo?.firstName + " " + userInfo?.lastName;
-  
+
   return (
     <>
       <Container className={nunito.className}>
@@ -284,10 +284,13 @@ export default function Header() {
                 <span>Réunions</span>
               )}
               {router.pathname === "/settings" && (
-                <span>{fullName}</span>
+                <span>Paramètres</span>
               )}
               {router.pathname === "/settings/edit" && (
-                <span>Modifier</span>
+                <span>{fullName}</span>
+              )}
+              {router.pathname === "/employees" && (
+                <span>Employés</span>
               )}
             </div>
           </div>
@@ -309,7 +312,7 @@ export default function Header() {
           <List>
             <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
             <li><Icon icon="cil:room" /><Link href='/bookings'>Salles</Link></li>
-            <li><Icon icon="mdi:people" /><Link href='/bookings'>Employés</Link></li>
+            <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>
             )}
