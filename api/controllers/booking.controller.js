@@ -27,7 +27,7 @@ const User = db.user;
  *     endDate: "2023-06-25",
  *     purpose: "Meeting",
  *     roomId: "123456",
- *     isModerator: true,
+ *     isApproved: true,
  *     userIds: ["user1", "user2"]
  * };
  * const req = { body: newBookingData };

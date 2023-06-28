@@ -1,25 +1,46 @@
 import React from "react";
-// import styled from "styled-components";
+import { Orbitron, Nunito } from 'next/font/google'
+import styled from "styled-components";
 
-// const Container = styled.header`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   width: 100%;
-//   position: fixed;
-//   z-index: 100;
-//   transition: all 1s ease-in-out;
-//   padding: 20px 5%;
-//   height: 80px;
-//   @media screen and (min-width: 768px) {
-//     padding: 0;
-//   }
-// `;
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weights: [400, 700],
+})
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  weights: [400, 500, 700],
+})
+
+const Container = styled.footer`
+  display: flex;
+  justify-content: center;
+
+  div {
+    padding: 0.5rem 0;
+
+    p {
+      font-size: 1rem;
+      text-align: center;
+      color: var(--secondary-text);
+    }
+
+    p:last-child {
+      font-size: 0.55rem;
+      margin-top: 0.2rem;
+    }
+  }
+`;
 
 export default function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer>
-      footer
-    </footer>
+    <Container>
+      <div>
+        <p className={orbitron.className}>SMART</p>
+        <p className={nunito.className}>All rights reserved, {year}</p>
+      </div>
+    </Container>
   );
 }

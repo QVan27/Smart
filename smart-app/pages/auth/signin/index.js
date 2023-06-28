@@ -74,7 +74,7 @@ const Form = styled.form`
       background: var(--accident);
       border: none;
       margin-inline: auto;
-      color: #ffffff;
+      color: var(--text-light);
       text-align: center;
       font-size: 0.875rem;
       font-weight: 700;

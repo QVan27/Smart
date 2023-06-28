@@ -78,6 +78,10 @@ const Container = styled.header`
         transform: translateY(0.5rem);
       }
     }
+
+    &__text {
+      color: var(--text-light);
+    }
   }
 `;
 
@@ -101,6 +105,7 @@ const Overlay = styled.div`
   inset: 0;
   z-index: 13;
   transition: all 0.3s ease-out;
+  pointer-events: none;
 
   &.active {
     background-color: rgba(0, 0, 0, 0.5);

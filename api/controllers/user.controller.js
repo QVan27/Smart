@@ -1,7 +1,8 @@
 const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const User = db.user;
-const Role = db.role;
+const Booking = db.booking;
+const Room = db.room;
 const bcrypt = require("bcryptjs");
 require('dotenv').config()
 
@@ -202,24 +203,37 @@ exports.getUserBookings = async (req, res, next) => {
  * @param {Object} res - Express response object.
  * @param {Object} next - Express next middleware function.
  * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
- * @throws {Error} - If an error occurs while retrieving the user's bookings.
+ * @throws {ErrorResponse} - If the user does not exist or an error occurs.
  *
  * @example
- * getSessionUserBookings(req, res);
+ * getSessionUserBookings(req, res, next);
  */
 exports.getSessionUserBookings = async (req, res, next) => {
     try {
-        const userId = req.userId; // Assuming the authenticated user's ID is available in the request object (req.userId)
+        const userId = req.userId;
 
         const user = await User.findByPk(userId, {
-            include: "bookings",
+            include: {
+                model: Booking,
+                include: [{ model: User }, { model: Room }],
+                attributes: ['id', 'purpose', 'startDate', 'endDate'],
+            },
         });
 
         if (!user) {
             return next(new ErrorResponse("User does not exist!", 404));
         }
 
-        const bookings = user.bookings;
+        const bookings = user.bookings.map(booking => {
+            return {
+                id: booking.id,
+                purpose: booking.purpose,
+                startDate: booking.startDate,
+                endDate: booking.endDate,
+                room: booking.room,
+                users: booking.users,
+            };
+        });
         res.status(200).send(bookings);
     } catch (err) {
         next(new ErrorResponse(err.message, 500));
