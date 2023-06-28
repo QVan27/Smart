@@ -255,6 +255,9 @@ export default function Header() {
     fetchUserInfo();
   }, []);
 
+  const userRoles = userInfo?.roles;
+  const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
+
   return (
     <>
       <Container className={nunito.className}>
@@ -288,7 +291,7 @@ export default function Header() {
             <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
             <li><Icon icon="cil:room" /><Link href='/bookings'>Salles</Link></li>
             <li><Icon icon="mdi:people" /><Link href='/bookings'>Employés</Link></li>
-            {userInfo?.roles === 'MODERATOR' || 'ADMIN' && (
+            {showManagerLink && (
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>
             )}
             <li><Icon icon="material-symbols:settings" /><Link href='/bookings'>Paramètres</Link></li>
