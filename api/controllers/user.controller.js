@@ -1,7 +1,9 @@
 const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const User = db.user;
+const Role = db.role;
 const bcrypt = require("bcryptjs");
+require('dotenv').config()
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
@@ -219,6 +221,50 @@ exports.getSessionUserBookings = async (req, res, next) => {
 
         const bookings = user.bookings;
         res.status(200).send(bookings);
+    } catch (err) {
+        next(new ErrorResponse(err.message, 500));
+    }
+};
+
+/**
+ * Retrieves the information of the currently authenticated user.
+ *
+ * @async
+ * @function getUserInfo
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {ErrorResponse} - If the user does not exist or an error occurs.
+ *
+ * @example
+ * getUserInfo(req, res, next);
+ */
+exports.getUserInfo = async (req, res, next) => {
+    try {
+        const userId = req.userId;
+
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return next(new ErrorResponse("User does not exist!", 404));
+        }
+
+        const roles = await user.getRoles();
+
+        const userRoles = roles.map(role => role.name);
+
+        const userInfo = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            position: user.position,
+            picture: user.picture,
+            roles: userRoles,
+        };
+
+        res.status(200).send(userInfo);
     } catch (err) {
         next(new ErrorResponse(err.message, 500));
     }

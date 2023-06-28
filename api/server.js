@@ -74,7 +74,7 @@ function initial() {
     lastName: "Vannarath",
     email: "admin@smart.com",
     position: "developer",
-    picture: "profile.jpg",
+    picture: "https://media.licdn.com/dms/image/C4E03AQH8u8YIiiczfA/profile-displayphoto-shrink_800_800/0/1607001937665?e=1693440000&v=beta&t=kA7vju3Au11g1MYpdsPt7lhL5tXgHJ03P5eujtwSmpg",
     password: hashedPasswordAdmin,
   }).then(user => {
     Role.findOne({ where: { name: "ADMIN" } }).then(role => {

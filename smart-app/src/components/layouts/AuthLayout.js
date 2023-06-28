@@ -9,7 +9,7 @@ const nunito = Nunito({
 const Container = styled.div`
   display: grid;
   place-items: center;
-  background: #16181C;
+  background: var(--main);
 `;
 
 export default function SimpleLayout({ children }) {

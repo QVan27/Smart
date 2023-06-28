@@ -126,7 +126,7 @@ export default function SignIn() {
           <Image src="/astro-connect.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
           <Title className={orbitron.className}>Smart</Title>
         </div>
-        <SubTitle>Connectez votre compte</SubTitle>
+        <SubTitle>Connecter votre compte</SubTitle>
         <Form onSubmit={handleSubmit}>
           <input
             type="text"

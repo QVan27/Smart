@@ -163,6 +163,15 @@ REST API
 | :-------- | :------- | :------------------------- |
 | `x-access-token` | `string` | **Required**. Your access token |
 
+### Retrieves the information of the currently authenticated user
+
+```http
+  GET api/user
+```
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `x-access-token` | `string` | **Required**. Your access token |
+
 ## Rooms
 
 ### Retrieves all bookings belonging to a room
