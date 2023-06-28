@@ -10,7 +10,7 @@ const nunito = Nunito({
   weights: [400, 500, 700],
 })
 
-const Container = styled.div`
+const Section = styled.section`
   display: grid;
   place-items: center;
   align-content: center;
@@ -85,7 +85,7 @@ const BookingCard = styled.div`
       height: 1.25rem;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+      box-shadow: var(--secondary-shadow);
 
       img {
         width: 100%;
@@ -155,13 +155,12 @@ export default function Bookings() {
   }, []);
 
   return (
-    <Container>
+    <Section>
       <Wrap>
         <List>
           {userBookings?.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)).map((booking, i) => {
             const firstFiveUsers = booking?.users.slice(0, 5);
             const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
-            console.log(formatTime(booking.startDate))
 
             return (
               <BookingCard key={i} className={nunito.className}>
@@ -194,6 +193,6 @@ export default function Bookings() {
           })}
         </List>
       </Wrap>
-    </Container>
+    </Section>
   )
 }

@@ -15,6 +15,7 @@ const Container = styled.div`
   align-content: center;
   height: 100vh;
   width: 100%;
+  color: var(--text-light);
 `;
 
 const Title = styled.h1`
@@ -24,7 +25,6 @@ const Title = styled.h1`
 
 const SubTitle = styled.h2`
   margin: 3.13rem 0 2.94rem 0;
-  color: #FFF;
   text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
@@ -52,21 +52,51 @@ const Form = styled.form`
   }
 
   button {
-      display: flex;
-      width: 18.75rem;
-      padding: 1.25rem 0rem;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      border-radius: 30px;
-      background: var(--accident);
-      border: none;
-      margin-inline: auto;
-      color: #ffffff;
-      text-align: center;
-      font-size: 0.875rem;
-      font-weight: 700;
+    display: flex;
+    width: 18.75rem;
+    padding: 1.25rem 0rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    background: var(--accident);
+    border: none;
+    margin-inline: auto;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    @media screen and (hover: hover) {
+      position: relative;
+      overflow: hidden;
+
+      span {
+        position: relative;
+        z-index: 2;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        border-radius: 50%;
+        background: var(--text-light);
+        opacity: 0.35;
+        transition: transform 0.5s ease-in-out;
+        transform-origin: center;
+        width: 20rem;
+        height: 20rem;
+      }
+
+      &:hover::before {
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
+  }
 `;
 
 export default function SignUp() {
@@ -85,7 +115,7 @@ export default function SignUp() {
           <input type="text" id="email" name="email" placeholder="Email" required />
           <input type="text" id="position" name="position" placeholder="Position" required />
           <input type="password" id="password" name="password" placeholder="Mot de passe" required />
-          <button type="submit">S'inscrire</button>
+          <button type="submit"><span>S'inscrire</span></button>
         </Form>
       </Container>
     </Wrap>

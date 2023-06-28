@@ -18,6 +18,7 @@ const Container = styled.div`
   align-content: center;
   height: 100vh;
   width: 100%;
+  color: var(--text-light);
 `;
 
 const Title = styled.h1`
@@ -27,7 +28,6 @@ const Title = styled.h1`
 
 const SubTitle = styled.h2`
   margin: 3.13rem 0 2.94rem 0;
-  color: #FFF;
   text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
@@ -64,21 +64,51 @@ const Form = styled.form`
   }
 
   button {
-      display: flex;
-      width: 18.75rem;
-      padding: 1.25rem 0rem;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      border-radius: 30px;
-      background: var(--accident);
-      border: none;
-      margin-inline: auto;
-      color: var(--text-light);
-      text-align: center;
-      font-size: 0.875rem;
-      font-weight: 700;
+    display: flex;
+    width: 18.75rem;
+    padding: 1.25rem 0rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    background: var(--accident);
+    border: none;
+    margin-inline: auto;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    @media screen and (hover: hover) {
+      position: relative;
+      overflow: hidden;
+
+      span {
+        position: relative;
+        z-index: 2;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        border-radius: 50%;
+        background: var(--text-light);
+        opacity: 0.35;
+        transition: transform 0.5s ease-in-out;
+        transform-origin: center;
+        width: 20rem;
+        height: 20rem;
+      }
+
+      &:hover::before {
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
+  }
 `;
 
 export default function SignIn() {
@@ -144,10 +174,10 @@ export default function SignIn() {
             value={password}
             onChange={handlePasswordChange}
             required />
-          <button type="submit">Se connecter</button>
+          <button type="submit"><span>Se connecter</span></button>
         </Form>
         <Redirect>
-          Ou créer <Link href="/auth/signin">votre comptre</Link>
+          Ou créer <Link href="/auth/signup">votre comptre</Link>
         </Redirect>
       </Container>
     </Wrap>

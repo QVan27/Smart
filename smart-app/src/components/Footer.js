@@ -38,7 +38,7 @@ export default function Footer() {
   return (
     <Container>
       <div>
-        <p className={orbitron.className}>SMART</p>
+        <p className={orbitron.className}>Smart</p>
         <p className={nunito.className}>All rights reserved, {year}</p>
       </div>
     </Container>

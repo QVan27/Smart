@@ -20,6 +20,6 @@ module.exports = function (app) {
     app.get('/api/users/:id/bookings', [authJwt.verifyToken], controller.getUserBookings);
     app.get('/api/user/bookings', [authJwt.verifyToken], controller.getSessionUserBookings);
     app.get('/api/user', [authJwt.verifyToken], controller.getUserInfo);
-    app.put("/api/users/:id", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.updateUser);
+    app.put("/api/users/:id", [authJwt.verifyToken], controller.updateUser);
     app.delete("/api/users/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteUser);
 };

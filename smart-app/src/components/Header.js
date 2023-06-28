@@ -265,7 +265,7 @@ export default function Header() {
     };
 
     fetchUserInfo();
-  }, []);
+  }, [userInfo]);
 
   const userRoles = userInfo?.roles;
   const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
@@ -285,6 +285,9 @@ export default function Header() {
               )}
               {router.pathname === "/settings" && (
                 <span>{fullName}</span>
+              )}
+              {router.pathname === "/settings/edit" && (
+                <span>Modifier</span>
               )}
             </div>
           </div>
