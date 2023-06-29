@@ -4,6 +4,8 @@ import Wrap from '@components/Wrap'
 import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
 import { formatDate, formatTime } from '@utils/dateFormats';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -128,6 +130,23 @@ const BookingCard = styled.div`
   }
 `;
 
+const CreateBookingButton = styled.div`
+  a {
+    display: flex;
+    width: 3.125rem;
+    height: 3.125rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    border-radius: 50px;
+    background: #23252C;
+    box-shadow: var(--secondary-shadow);
+  }
+`;
+
 export default function Bookings() {
   const [userBookings, setUserBookings] = useState(null);
 
@@ -155,44 +174,55 @@ export default function Bookings() {
   }, []);
 
   return (
-    <Section>
-      <Wrap>
-        <List>
-          {userBookings?.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)).map((booking, i) => {
-            const firstFiveUsers = booking?.users.slice(0, 5);
-            const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
+    <>
+      <Section>
+        <Wrap>
+          <List>
+            {userBookings?.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)).map((booking, i) => {
+              const firstFiveUsers = booking?.users.slice(0, 5);
+              const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
 
-            return (
-              <BookingCard key={i} className={nunito.className}>
-                <div className='heading'>
-                  <p>{booking.purpose}</p>
-                  <span>{formatDate(booking.startDate)}</span>
-                </div>
-                <div className='infos'>
-                  <div className='infos__group infos__group--date'>
-                    <Icon icon="ph:clock" />
-                    <span>{formatTime(booking.startDate) + " - " + formatTime(booking.endDate)}</span>
+              return (
+                <BookingCard key={i} className={nunito.className}>
+                  <div className='heading'>
+                    <p>{booking.purpose}</p>
+                    <span>{formatDate(booking.startDate)}</span>
                   </div>
-                  <div className='infos__group infos__group--loc'>
-                    <Icon icon="bx:map" />
-                    <span>{booking.room.name}</span>
-                  </div>
-                </div>
-                <div className='users'>
-                  {firstFiveUsers.map((user, i) => (
-                    <div key={i} className='user'>
-                      <img src={user.picture} alt={user.name} />
+                  <div className='infos'>
+                    <div className='infos__group infos__group--date'>
+                      <Icon icon="ph:clock" />
+                      <span>{formatTime(booking.startDate) + " - " + formatTime(booking.endDate)}</span>
                     </div>
-                  ))}
-                  {remainingUsersCount > 0 && (
-                    <div className='remaining user'>{`+${remainingUsersCount}`}</div>
-                  )}
-                </div>
-              </BookingCard>
-            );
-          })}
-        </List>
-      </Wrap>
-    </Section>
+                    <div className='infos__group infos__group--loc'>
+                      <Icon icon="bx:map" />
+                      <span>{booking.room.name}</span>
+                    </div>
+                  </div>
+                  <div className='users'>
+                    {firstFiveUsers.map((user, i) => (
+                      <div key={i} className='user'>
+                        <img src={user.picture} alt={user.name} />
+                      </div>
+                    ))}
+                    {remainingUsersCount > 0 && (
+                      <div className='remaining user'>{`+${remainingUsersCount}`}</div>
+                    )}
+                  </div>
+                </BookingCard>
+              );
+            })}
+          </List>
+        </Wrap>
+      </Section>
+      <CreateBookingButton>
+        <Link href="/bookings/create">
+          <Image
+            src="/images/plus.svg"
+            width={15}
+            height={15}
+            alt="plus" />
+        </Link>
+      </CreateBookingButton>
+    </>
   )
 }
