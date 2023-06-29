@@ -105,7 +105,7 @@ export default function SignUp() {
     <Wrap>
       <Container>
         <div>
-          <Image src="/astro-signin.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
+          <Image src="/images/astro-signin.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
           <Title className={orbitron.className}>Smart</Title>
         </div>
         <SubTitle>Créer votre compte</SubTitle>

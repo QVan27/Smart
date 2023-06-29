@@ -153,7 +153,7 @@ export default function SignIn() {
     <Wrap>
       <Container>
         <div>
-          <Image src="/astro-connect.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
+          <Image src="/images/astro-connect.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
           <Title className={orbitron.className}>Smart</Title>
         </div>
         <SubTitle>Connecter votre compte</SubTitle>
