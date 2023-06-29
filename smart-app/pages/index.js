@@ -147,7 +147,7 @@ const CreateBookingButton = styled.div`
   }
 `;
 
-export default function Bookings() {
+export default function Home() {
   const [userBookings, setUserBookings] = useState(null);
 
   useEffect(() => {
