@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Wrap from '@components/Wrap'
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import SubmitButton from '@components/buttons/SubmitButton'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -62,53 +63,6 @@ const Form = styled.form`
       border-bottom: 1px solid var(--accident);
     }
   }
-
-  button {
-    display: flex;
-    width: 18.75rem;
-    padding: 1.25rem 0rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 30px;
-    background: var(--accident);
-    border: none;
-    margin-inline: auto;
-    text-align: center;
-    font-size: 0.875rem;
-    font-weight: 700;
-    cursor: pointer;
-
-    @media screen and (hover: hover) {
-      position: relative;
-      overflow: hidden;
-
-      span {
-        position: relative;
-        z-index: 2;
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        z-index: 1;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        border-radius: 50%;
-        background: var(--text-light);
-        opacity: 0.35;
-        transition: transform 0.5s ease-in-out;
-        transform-origin: center;
-        width: 20rem;
-        height: 20rem;
-      }
-
-      &:hover::before {
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-  }
 `;
 
 export default function SignIn() {
@@ -153,7 +107,13 @@ export default function SignIn() {
     <Wrap>
       <Container>
         <div>
-          <Image src="/images/astro-connect.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
+          <Image
+            src="/images/astro-connect.svg"
+            alt="logo"
+            width={200}
+            height={150}
+            style={{ objectFit: "contain" }}
+            priority={true} />
           <Title className={orbitron.className}>Smart</Title>
         </div>
         <SubTitle>Connecter votre compte</SubTitle>
@@ -174,7 +134,7 @@ export default function SignIn() {
             value={password}
             onChange={handlePasswordChange}
             required />
-          <button type="submit"><span>Se connecter</span></button>
+          <SubmitButton text="Se connecter" backgroundColor="var(--accident)" />
         </Form>
         <Redirect>
           Ou créer <Link href="/auth/signup">votre comptre</Link>

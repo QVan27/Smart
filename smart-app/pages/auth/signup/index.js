@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { Orbitron } from 'next/font/google'
 import Image from 'next/image'
 import Wrap from '@components/Wrap'
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import SubmitButton from '@components/buttons/SubmitButton'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -35,7 +38,8 @@ const Form = styled.form`
   flex-direction: column;
   width: min(100%, 400px);
 
-  input {
+  input,
+  select {
     margin-bottom: 1.87rem;
     background-color: transparent;
     border: none;
@@ -50,72 +54,168 @@ const Form = styled.form`
       border-bottom: 1px solid var(--accident);
     }
   }
-
-  button {
-    display: flex;
-    width: 18.75rem;
-    padding: 1.25rem 0rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 30px;
-    background: var(--accident);
-    border: none;
-    margin-inline: auto;
-    text-align: center;
-    font-size: 0.875rem;
-    font-weight: 700;
-    cursor: pointer;
-
-    @media screen and (hover: hover) {
-      position: relative;
-      overflow: hidden;
-
-      span {
-        position: relative;
-        z-index: 2;
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        z-index: 1;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        border-radius: 50%;
-        background: var(--text-light);
-        opacity: 0.35;
-        transition: transform 0.5s ease-in-out;
-        transform-origin: center;
-        width: 20rem;
-        height: 20rem;
-      }
-
-      &:hover::before {
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-  }
 `;
 
+const ErrorMessage = styled.p`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+  top: -25px;
+  color: var(--accident);
+  font-size: 0.875rem;
+`;
+
+const isEmailValid = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  return emailRegex.test(email);
+};
+
 export default function SignUp() {
+  const router = useRouter();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [position, setPosition] = useState('');
+  const [password, setPassword] = useState('');
+  const [roles, setRoles] = useState(['USER']);
+  const [picture, setPicture] = useState('https://avatars.githubusercontent.com/u/12041934');
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      if (!firstName || !lastName || !email || !position || !password) {
+        setError('Veuillez remplir tous les champs');
+        return;
+      }
+
+      if (!isEmailValid(email)) {
+        setError('Veuillez entrer une adresse email valide');
+        return;
+      }
+
+      const res = await fetch('http://localhost:8080/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ firstName, lastName, email, picture, position, password, roles }),
+      });
+
+      if (res.ok) {
+        console.log('Compte créé avec succès');
+        router.push('/auth/signin');
+      } else {
+        setError('Erreur de création de compte');
+      }
+    } catch (error) {
+      console.error('Erreur de création de compte:', error);
+      setError('Erreur de création de compte');
+    }
+  }
+
+
+  const handleFirstNameInputChange = (e) => {
+    setFirstName(e.target.value);
+  };
+
+  const handleLastNameInputChange = (e) => {
+    setLastName(e.target.value);
+  };
+
+  const handleEmailInputChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePositionInputChange = (e) => {
+    setPosition(e.target.value);
+  };
+
+  const handlePasswordInputChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleRoleChange = (e) => {
+    setRoles(e.target.value);
+  };
+
+  const handlePictureInputChange = (e) => {
+    setPicture(e.target.value);
+  };
 
   return (
     <Wrap>
       <Container>
         <div>
-          <Image src="/images/astro-signin.svg" alt="logo" width={200} height={150} style={{ objectFit: "contain" }} priority={true} />
+          <Image
+            src="/images/astro-signin.svg"
+            alt="logo"
+            width={200}
+            height={150}
+            style={{ objectFit: "contain" }}
+            priority={true} />
           <Title className={orbitron.className}>Smart</Title>
         </div>
         <SubTitle>Créer votre compte</SubTitle>
-        <Form action="api/auth/signup" method="post">
-          <input type="text" id="firstName" name="firstName" placeholder="Prénom" required />
-          <input type="text" id="lastName" name="lastName" placeholder="Nom" required />
-          <input type="text" id="email" name="email" placeholder="Email" required />
-          <input type="text" id="position" name="position" placeholder="Position" required />
-          <input type="password" id="password" name="password" placeholder="Mot de passe" required />
-          <button type="submit"><span>S'inscrire</span></button>
+        <Form onSubmit={handleSubmit}>
+          {error && <ErrorMessage className={orbitron.className}>{error}</ErrorMessage>}
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            placeholder="Prénom"
+            value={firstName}
+            onChange={handleFirstNameInputChange}
+            required />
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            placeholder="Nom"
+            value={lastName}
+            onChange={handleLastNameInputChange}
+            required />
+          <input
+            type="text"
+            id="email"
+            name="email"
+            placeholder="Email"
+            value={email}
+            onChange={handleEmailInputChange}
+            required />
+          <input
+            type="text"
+            id="picture"
+            name="picture"
+            placeholder="Photo de profil"
+            value={picture}
+            onChange={handlePictureInputChange}
+            disabled />
+          <input
+            type="text"
+            id="position"
+            name="position"
+            placeholder="Position"
+            value={position}
+            onChange={handlePositionInputChange}
+            required />
+          <select name="roles" value={roles} onChange={handleRoleChange} disabled>
+            <option value="USER">USER</option>
+            <option value="MODERATOR">MODERATOR</option>
+          </select>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Mot de passe"
+            value={password}
+            onChange={handlePasswordInputChange}
+            required />
+          <SubmitButton text="S'inscrire" backgroundColor="var(--accident)" />
         </Form>
       </Container>
     </Wrap>
