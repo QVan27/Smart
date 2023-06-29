@@ -79,7 +79,9 @@ export default function Edit() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
   const [updateUser, setUpdateUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
+  const [accessToken, setAccessToken] = useState(
+    typeof localStorage !== 'undefined' ? localStorage.getItem('accessToken') : null
+  );
   const [email, setEmail] = useState('');
   const [picture, setPicture] = useState('');
   const [position, setPosition] = useState('');

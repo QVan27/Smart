@@ -28,7 +28,7 @@ const Container = styled.div`
 const Info = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.88rem;
   margin-bottom: 3.17rem;
 
