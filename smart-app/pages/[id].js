@@ -16,6 +16,7 @@ const Section = styled.section`
   display: grid;
   place-items: center;
   align-content: center;
+  padding-top: 5.5rem;
   min-height: 95vh;
   width: 100%;
   background-color: var(--text-light);
@@ -288,8 +289,6 @@ export default function SingleBooking() {
       fetchRoom();
     }
   }, [booking?.roomId]);
-
-  console.log(room)
 
   return (
     <>

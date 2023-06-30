@@ -134,7 +134,6 @@ export default function Rooms() {
         <Wrap>
           <List>
             {rooms?.map((room, i) => (
-              console.log(room),
               <li key={i}>
                 <Link href={`/rooms/${room.id}`}>
                   <Room>

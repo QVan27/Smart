@@ -268,10 +268,8 @@ export default function Header() {
     fetchUserInfo();
   }, []);
 
-  const userRoles = userInfo?.roles;
-  const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
+  const showManagerLink = userInfo?.roles.includes('MODERATOR') || userInfo?.roles.includes('ADMIN');
   const fullName = userInfo?.firstName + " " + userInfo?.lastName;
-
   const headerTexts = {
     '/': 'Réunions',
     '/[id]': 'Réunion',
@@ -281,8 +279,8 @@ export default function Header() {
     '/employees': 'Employés',
     '/rooms': 'Salles',
     '/rooms/[id]': 'Salle',
+    '/rooms/edit': 'Modifier une salle',
   };
-
   const headerText = headerTexts[router.pathname] || '';
 
   return (
