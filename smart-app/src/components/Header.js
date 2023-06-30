@@ -274,11 +274,13 @@ export default function Header() {
 
   const headerTexts = {
     '/': 'Réunions',
+    '/[id]': 'Réunion',
+    '/create-booking': 'Créer une réunion',
     '/settings': 'Paramètres',
     '/settings/edit': fullName,
     '/employees': 'Employés',
-    '/create-booking': 'Créer une réunion',
     '/rooms': 'Salles',
+    '/rooms/[id]': 'Salle',
   };
 
   const headerText = headerTexts[router.pathname] || '';

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -135,24 +136,26 @@ export default function Rooms() {
             {rooms?.map((room, i) => (
               console.log(room),
               <li key={i}>
-                <Room>
-                  <div className='image'>
-                    <img src={room.image} alt="" />
-                  </div>
-                  <div className='content'>
-                    <div className='content__top'>
-                      <p>{room.name}</p>
-                      <p>
-                        <Icon icon="mdi:people" />
-                        <span>{room.capacity}</span>
-                      </p>
+                <Link href={`/rooms/${room.id}`}>
+                  <Room>
+                    <div className='image'>
+                      <img src={room.image} alt="" />
                     </div>
-                    <div className='content__bottom'>
-                      <p>{room.floor} étage</p>
-                      <p>{room.pointOfContactEmail}</p>
+                    <div className='content'>
+                      <div className='content__top'>
+                        <p>{room.name}</p>
+                        <p>
+                          <Icon icon="mdi:people" />
+                          <span>{room.capacity}</span>
+                        </p>
+                      </div>
+                      <div className='content__bottom'>
+                        <p>{room.floor} étage</p>
+                        <p>{room.pointOfContactEmail}</p>
+                      </div>
                     </div>
-                  </div>
-                </Room>
+                  </Room>
+                </Link>
               </li>
             ))}
           </List>
