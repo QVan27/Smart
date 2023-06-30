@@ -216,7 +216,7 @@ exports.getSessionUserBookings = async (req, res, next) => {
             include: {
                 model: Booking,
                 include: [{ model: User }, { model: Room }],
-                attributes: ['id', 'purpose', 'startDate', 'endDate'],
+                attributes: ['id', 'purpose', 'startDate', 'endDate', 'isApproved'],
             },
         });
 
@@ -230,6 +230,7 @@ exports.getSessionUserBookings = async (req, res, next) => {
                 purpose: booking.purpose,
                 startDate: booking.startDate,
                 endDate: booking.endDate,
+                isApproved: booking.isApproved,
                 room: booking.room,
                 users: booking.users,
             };

@@ -180,10 +180,13 @@ export default function Home() {
       <Section>
         <Wrap>
           <List>
-            {userBookings?.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)).map((booking, i) => {
+            {userBookings
+            ?.filter(booking => booking.isApproved === true)
+            .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+            .map((booking, i) => {
               const firstFiveUsers = booking?.users.slice(0, 5);
               const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
-
+            
               return (
                 <Link key={i} href={`/${booking.id}`}>
                   <BookingCard key={i} className={nunito.className}>
