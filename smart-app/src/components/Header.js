@@ -271,6 +271,17 @@ export default function Header() {
   const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
   const fullName = userInfo?.firstName + " " + userInfo?.lastName;
 
+  const headerTexts = {
+    '/': 'Réunions',
+    '/settings': 'Paramètres',
+    '/settings/edit': fullName,
+    '/employees': 'Employés',
+    '/create-booking': 'Créer une réunion',
+    '/rooms': 'Salles',
+  };
+
+  const headerText = headerTexts[router.pathname] || '';
+
   return (
     <>
       <Container className={nunito.className}>
@@ -280,21 +291,7 @@ export default function Header() {
               <span></span>
             </div>
             <div className='header__text'>
-              {router.pathname === "/" && (
-                <span>Réunions</span>
-              )}
-              {router.pathname === "/settings" && (
-                <span>Paramètres</span>
-              )}
-              {router.pathname === "/settings/edit" && (
-                <span>{fullName}</span>
-              )}
-              {router.pathname === "/employees" && (
-                <span>Employés</span>
-              )}
-              {router.pathname === "/create-booking" && (
-                <span>Créer une réunion</span>
-              )}
+              <span>{headerText}</span>
             </div>
           </div>
           <LogoutButton onClick={handleLogout}><Icon icon="iconamoon:exit" /></LogoutButton>
@@ -314,7 +311,7 @@ export default function Header() {
           <div className='hLine'></div>
           <List>
             <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
-            <li><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
+            <li className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
             <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>
