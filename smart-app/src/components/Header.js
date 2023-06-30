@@ -110,6 +110,7 @@ const Overlay = styled.div`
 
   &.active {
     background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
   }
 `;
 
@@ -265,11 +266,22 @@ export default function Header() {
     };
 
     fetchUserInfo();
-  }, [userInfo]);
+  }, []);
 
-  const userRoles = userInfo?.roles;
-  const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
+  const showManagerLink = userInfo?.roles.includes('MODERATOR') || userInfo?.roles.includes('ADMIN');
   const fullName = userInfo?.firstName + " " + userInfo?.lastName;
+  const headerTexts = {
+    '/': 'Réunions',
+    '/[id]': 'Réunion',
+    '/create-booking': 'Créer une réunion',
+    '/settings': 'Paramètres',
+    '/settings/edit': fullName,
+    '/employees': 'Employés',
+    '/rooms': 'Salles',
+    '/rooms/[id]': 'Salle',
+    '/rooms/edit': 'Modifier une salle',
+  };
+  const headerText = headerTexts[router.pathname] || '';
 
   return (
     <>
@@ -280,18 +292,7 @@ export default function Header() {
               <span></span>
             </div>
             <div className='header__text'>
-              {router.pathname === "/" && (
-                <span>Réunions</span>
-              )}
-              {router.pathname === "/settings" && (
-                <span>Paramètres</span>
-              )}
-              {router.pathname === "/settings/edit" && (
-                <span>{fullName}</span>
-              )}
-              {router.pathname === "/employees" && (
-                <span>Employés</span>
-              )}
+              <span>{headerText}</span>
             </div>
           </div>
           <LogoutButton onClick={handleLogout}><Icon icon="iconamoon:exit" /></LogoutButton>
@@ -311,7 +312,7 @@ export default function Header() {
           <div className='hLine'></div>
           <List>
             <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
-            <li><Icon icon="cil:room" /><Link href='/bookings'>Salles</Link></li>
+            <li className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
             <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>

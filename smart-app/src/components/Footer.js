@@ -15,10 +15,10 @@ const nunito = Nunito({
 const Container = styled.footer`
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 5vh;
 
   div {
-    padding: 0.5rem 0;
-
     p {
       font-size: 1rem;
       text-align: center;
