@@ -265,7 +265,7 @@ export default function Header() {
     };
 
     fetchUserInfo();
-  }, [userInfo]);
+  }, []);
 
   const userRoles = userInfo?.roles;
   const showManagerLink = userRoles === 'MODERATOR' || userRoles === 'ADMIN';
@@ -292,6 +292,9 @@ export default function Header() {
               {router.pathname === "/employees" && (
                 <span>Employés</span>
               )}
+              {router.pathname === "/create-booking" && (
+                <span>Créer une réunion</span>
+              )}
             </div>
           </div>
           <LogoutButton onClick={handleLogout}><Icon icon="iconamoon:exit" /></LogoutButton>
@@ -311,7 +314,7 @@ export default function Header() {
           <div className='hLine'></div>
           <List>
             <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
-            <li><Icon icon="cil:room" /><Link href='/bookings'>Salles</Link></li>
+            <li><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
             <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>

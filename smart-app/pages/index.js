@@ -215,7 +215,7 @@ export default function Home() {
         </Wrap>
       </Section>
       <CreateBookingButton>
-        <Link href="/bookings/create">
+        <Link href="/create-booking">
           <Image
             src="/images/plus.svg"
             width={15}
