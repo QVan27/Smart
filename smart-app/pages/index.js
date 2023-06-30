@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react';
 import { formatDate, formatTime } from '@utils/dateFormats';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -148,6 +149,7 @@ const CreateBookingButton = styled.div`
 `;
 
 export default function Home() {
+  const router = useRouter();
   const [userBookings, setUserBookings] = useState(null);
 
   useEffect(() => {
@@ -183,32 +185,34 @@ export default function Home() {
               const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
 
               return (
-                <BookingCard key={i} className={nunito.className}>
-                  <div className='heading'>
-                    <p>{booking.purpose}</p>
-                    <span>{formatDate(booking.startDate)}</span>
-                  </div>
-                  <div className='infos'>
-                    <div className='infos__group infos__group--date'>
-                      <Icon icon="ph:clock" />
-                      <span>{formatTime(booking.startDate) + " - " + formatTime(booking.endDate)}</span>
+                <Link key={i} href={`/${booking.id}`}>
+                  <BookingCard key={i} className={nunito.className}>
+                    <div className='heading'>
+                      <p>{booking.purpose}</p>
+                      <span>{formatDate(booking.startDate)}</span>
                     </div>
-                    <div className='infos__group infos__group--loc'>
-                      <Icon icon="bx:map" />
-                      <span>{booking.room.name}</span>
-                    </div>
-                  </div>
-                  <div className='users'>
-                    {firstFiveUsers.map((user, i) => (
-                      <div key={i} className='user'>
-                        <img src={user.picture} alt={user.name} />
+                    <div className='infos'>
+                      <div className='infos__group infos__group--date'>
+                        <Icon icon="ph:clock" />
+                        <span>{formatTime(booking.startDate) + " - " + formatTime(booking.endDate)}</span>
                       </div>
-                    ))}
-                    {remainingUsersCount > 0 && (
-                      <div className='remaining user'>{`+${remainingUsersCount}`}</div>
-                    )}
-                  </div>
-                </BookingCard>
+                      <div className='infos__group infos__group--loc'>
+                        <Icon icon="bx:map" />
+                        <span>{booking.room.name}</span>
+                      </div>
+                    </div>
+                    <div className='users'>
+                      {firstFiveUsers.map((user, i) => (
+                        <div key={i} className='user'>
+                          <img src={user.picture} alt={user.name} />
+                        </div>
+                      ))}
+                      {remainingUsersCount > 0 && (
+                        <div className='remaining user'>{`+${remainingUsersCount}`}</div>
+                      )}
+                    </div>
+                  </BookingCard>
+                </Link>
               );
             })}
           </List>

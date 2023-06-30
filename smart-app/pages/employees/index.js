@@ -89,7 +89,7 @@ const Research = styled.div`
   }
 `;
 
-const List = styled.div`
+const List = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -98,7 +98,7 @@ const List = styled.div`
   padding-bottom: 1.88rem;
 `;
 
-const ListItem = styled.div`
+const ListItem = styled.li`
   display: flex;
   padding: 0rem 0rem 0rem 0.9375rem;
   align-items: center;

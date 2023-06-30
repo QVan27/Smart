@@ -110,6 +110,7 @@ const Overlay = styled.div`
 
   &.active {
     background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
   }
 `;
 
