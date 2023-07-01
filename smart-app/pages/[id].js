@@ -321,7 +321,7 @@ export default function SingleBooking() {
                     </p>
                   </div>
                   <div className='content__bottom'>
-                    <p>{room?.floor} étage</p>
+                    <p>{room?.floor} étage(s)</p>
                     <p>{room?.pointOfContactEmail}</p>
                   </div>
                 </div>

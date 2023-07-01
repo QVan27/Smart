@@ -144,13 +144,13 @@ export default function Rooms() {
                       <div className='content__top'>
                         <p>{room.name}</p>
                         <p>
-                          <Icon icon="mdi:people" />
-                          <span>{room.capacity}</span>
+                          <Icon icon="material-symbols:floor" />
+                          <span>{room.floor}</span>
                         </p>
                       </div>
                       <div className='content__bottom'>
-                        <p>{room.floor} étage</p>
                         <p>{room.pointOfContactEmail}</p>
+                        <p>{room.pointOfContactPhone}</p>
                       </div>
                     </div>
                   </Room>
