@@ -3,12 +3,13 @@ import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
-import { formatTime } from '@utils/dateFormats';
+import { formatTime, formatDate } from '@utils/dateFormats';
 import Link from 'next/link';
+import SmallSubmitButton from '@components/buttons/SmallSubmitButton';
 
 const nunito = Nunito({
   subsets: ['latin'],
-  weights: [400, 500, 700],
+  weights: [400, 500, 600, 700],
 })
 
 const Section = styled.section`
@@ -19,6 +20,21 @@ const Section = styled.section`
   padding: 5.5rem 0;
   width: 100%;
   background-color: var(--text-light);
+`;
+
+const Container = styled.div`
+  display: grid;
+  gap: 4rem;
+
+  .group {
+    display: grid;
+    gap: 1.25rem;
+  }
+`;
+
+const Title = styled.p`
+  font-size: 1.25rem;
+  font-weight: 600;
 `;
 
 const List = styled.ul`
@@ -72,7 +88,7 @@ const BookingCard = styled.div`
     p {
       font-size: 0.875rem;
       font-weight: 600;
-      max-width: 75%;
+      max-width: 70%;
     }
 
     span {
@@ -140,16 +156,17 @@ const Form = styled.form`
   z-index: 2;
   top: 0.625rem;
   right: 0.625rem;
+`;
 
-  button {
-    background-color: var(--main);
-    color: var(--text-light);
-    border: none;
-    border-radius: 30px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
+const Button = styled.button`
+  background-color: var(--main);
+  color: var(--text-light);
+  border: none;
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
 
-    @media screen and (hover: hover) {
+  @media screen and (hover: hover) {
     position: relative;
     overflow: hidden;
 
@@ -170,9 +187,8 @@ const Form = styled.form`
     }
 
     &:hover::before {
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, -50%) scale(1.5);
     }
-  }
   }
 `;
 
@@ -202,7 +218,7 @@ export default function ManageBooking() {
     fetchBooKings();
   }, [bookings]);
 
-  const handleSubmit = async (e, bookingId) => {
+  const handleValidate = async (e, bookingId) => {
     e.preventDefault();
 
     try {
@@ -227,54 +243,139 @@ export default function ManageBooking() {
     }
   };
 
+  const handleDelete = async (e, bookingId) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/bookings/${bookingId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': localStorage.getItem('accessToken')
+        },
+        body: JSON.stringify({
+          isApproved: true
+        })
+      });
+
+      if (response.ok) {
+        console.log('Booking approved successfully.');
+      } else {
+        console.log('Failed to approve booking.');
+      }
+    } catch (error) {
+      console.error('Error approving booking:', error);
+    }
+  };
+
   return (
     <>
       <Section>
         <Wrap>
-          <List>
-            {bookings?.filter((booking) => booking.isApproved === false)
-              .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-              .map((booking, i) => {
-                const firstFiveUsers = booking?.users.slice(0, 5);
-                const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
-                return (
-                  <>
-                    <Item key={i}>
-                      <Link href={`/${booking?.id}`}>
-                        <BookingCard className={nunito.className}>
-                          <div className='heading'>
-                            <p>{booking?.purpose}</p>
-                          </div>
-                          <div className='infos'>
-                            <div className='infos__group infos__group--date'>
-                              <Icon icon="ph:clock" />
-                              <span>{formatTime(booking?.startDate) + " - " + formatTime(booking?.endDate)}</span>
-                            </div>
-                            <div className='infos__group infos__group--loc'>
-                              <Icon icon="bx:map" />
-                              <span>{booking?.room.name}</span>
-                            </div>
-                          </div>
-                          <div className='users'>
-                            {firstFiveUsers.map((user, i) => (
-                              <div key={i} className='user'>
-                                <img src={user.picture} alt={user.name} />
+          <Container>
+            <div className='group'>
+              <Title className={nunito.className}>Approuver les réunions</Title>
+              <List>
+                {bookings?.filter((booking) => booking.isApproved === false)
+                  .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                  .map((booking, i) => {
+                    const firstFiveUsers = booking?.users.slice(0, 5);
+                    const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
+                    return (
+                      <>
+                        <Item key={i}>
+                          <Link href={`/${booking?.id}`}>
+                            <BookingCard className={nunito.className}>
+                              <div className='heading'>
+                                <p>{booking?.purpose}</p>
                               </div>
-                            ))}
-                            {remainingUsersCount > 0 && (
-                              <div className='remaining user'>{`+${remainingUsersCount}`}</div>
-                            )}
-                          </div>
-                        </BookingCard>
-                      </Link>
-                      <Form onSubmit={(e) => handleSubmit(e, booking?.id)}>
-                        <button type='submit'>Valider</button>
-                      </Form>
-                    </Item>
-                  </>
-                )
-              })}
-          </List>
+                              <div className='infos'>
+                                <div className='infos__group infos__group--date'>
+                                  <Icon icon="uil:schedule" />
+                                  <span>{formatDate(booking?.startDate)}</span>
+                                </div>
+                                <div className='infos__group infos__group--date'>
+                                  <Icon icon="ph:clock" />
+                                  <span>{formatTime(booking?.startDate) + " - " + formatTime(booking?.endDate)}</span>
+                                </div>
+                                <div className='infos__group infos__group--loc'>
+                                  <Icon icon="bx:map" />
+                                  <span>{booking?.room.name}</span>
+                                </div>
+                              </div>
+                              <div className='users'>
+                                {firstFiveUsers.map((user, i) => (
+                                  <div key={i} className='user'>
+                                    <img src={user.picture} alt={user.name} />
+                                  </div>
+                                ))}
+                                {remainingUsersCount > 0 && (
+                                  <div className='remaining user'>{`+${remainingUsersCount}`}</div>
+                                )}
+                              </div>
+                            </BookingCard>
+                          </Link>
+                          <Form onSubmit={(e) => handleValidate(e, booking?.id)}>
+                            <SmallSubmitButton text="Valider" backgroundColor="var(--main)">Supprimer</SmallSubmitButton>
+                          </Form>
+                        </Item>
+                      </>
+                    )
+                  })}
+              </List>
+            </div>
+            <div className='group'>
+              <Title className={nunito.className}>Supprimer une réunion existante</Title>
+              <List>
+                {bookings?.filter((booking) => booking.isApproved === true)
+                  .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                  .map((booking, i) => {
+                    const firstFiveUsers = booking?.users.slice(0, 5);
+                    const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
+                    return (
+                      <>
+                        <Item key={i}>
+                          <Link href={`/${booking?.id}`}>
+                            <BookingCard className={nunito.className}>
+                              <div className='heading'>
+                                <p>{booking?.purpose}</p>
+                              </div>
+                              <div className='infos'>
+                                <div className='infos__group infos__group--date'>
+                                  <Icon icon="uil:schedule" />
+                                  <span>{formatDate(booking?.startDate)}</span>
+                                </div>
+                                <div className='infos__group infos__group--date'>
+                                  <Icon icon="ph:clock" />
+                                  <span>{formatTime(booking?.startDate) + " - " + formatTime(booking?.endDate)}</span>
+                                </div>
+                                <div className='infos__group infos__group--loc'>
+                                  <Icon icon="bx:map" />
+                                  <span>{booking?.room.name}</span>
+                                </div>
+                              </div>
+                              <div className='users'>
+                                {firstFiveUsers.map((user, i) => (
+                                  <div key={i} className='user'>
+                                    <img src={user.picture} alt={user.name} />
+                                  </div>
+                                ))}
+                                {remainingUsersCount > 0 && (
+                                  <div className='remaining user'>{`+${remainingUsersCount}`}</div>
+                                )}
+                              </div>
+                            </BookingCard>
+                          </Link>
+                          <Form onSubmit={(e) => handleDelete(e, booking?.id)}>
+                            <SmallSubmitButton text="Supprimer" backgroundColor="var(--accident)">Supprimer</SmallSubmitButton>
+                          </Form>
+                        </Item>
+                      </>
+                    )
+                  })}
+              </List>
+            </div>
+          </Container>
         </Wrap>
       </Section>
     </>
