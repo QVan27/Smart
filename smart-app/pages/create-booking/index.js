@@ -23,6 +23,8 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  margin-inline: auto;
+  width: min(414px, 100%);
 
   .title,
   .rooms,
