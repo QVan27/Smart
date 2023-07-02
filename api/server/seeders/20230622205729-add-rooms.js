@@ -13,8 +13,18 @@ module.exports = {
 
     images = faker.helpers.shuffle(images);
 
+    let names = [
+      'Salle Catalyst',
+      'Espace Stratégia',
+      'Chambre de la Collaboration',
+      'Labo des Solutions',
+      'Salle Inspire',
+    ];
+
+    names = faker.helpers.shuffle(names);
+
     const rooms = Array.from({ length: 5 }).map(() => ({
-      name: faker.helpers.arrayElement(['Salle Catalyst', 'Espace Stratégia', 'Chambre de la Collaboration', 'Labo des Solutions', 'Salle Inspire']),
+      name: names.pop(),
       image: images.pop(),
       capacity: faker.number.int({ min: 5, max: 30 }),
       floor: faker.helpers.arrayElement(['1er', '2ème', '3ème', '4ème']),
