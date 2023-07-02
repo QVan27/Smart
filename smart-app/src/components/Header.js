@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
-import { Nunito } from 'next/font/google'
+import { Nunito, Orbitron } from 'next/font/google'
 import Link from 'next/link';
 
 const nunito = Nunito({
+  subsets: ['latin'],
+  weights: [400, 500, 700],
+})
+
+const orbitron = Orbitron({
   subsets: ['latin'],
   weights: [400, 500, 700],
 })
@@ -86,12 +91,13 @@ const Container = styled.header`
   }
 `;
 
-const LogoutButton = styled.button`
-  display: grid;
-  place-items: center;
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;  
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: var(--text-light);
   cursor: pointer;
   
@@ -209,7 +215,8 @@ const List = styled.ul`
       height: 1.25rem;
     }
 
-    a {
+    a,
+    span {
       font-size: 0.875rem;
     }
   }
@@ -243,6 +250,10 @@ export default function Header() {
     } catch (error) {
       console.error('Erreur lors de la requête de déconnexion:', error);
     }
+  };
+
+  const handleBackClick = () => {
+    router.back();
   };
 
   useEffect(() => {
@@ -296,7 +307,7 @@ export default function Header() {
               <span>{headerText}</span>
             </div>
           </div>
-          <LogoutButton onClick={handleLogout}><Icon icon="iconamoon:exit" /></LogoutButton>
+          <BackButton onClick={handleBackClick}><Icon icon="ep:back" /><span className={orbitron.className}>Retour</span></BackButton>
         </div>
       </Container>
       <SideBar className={isActive ? 'active' : ''}>
@@ -319,6 +330,7 @@ export default function Header() {
               <li><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
             )}
             <li className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
+            <li onClick={handleLogout}><Icon icon="iconamoon:exit" /><span>Déconnexion</span></li>
           </List>
         </div>
       </SideBar>
