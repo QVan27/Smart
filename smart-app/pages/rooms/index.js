@@ -11,10 +11,16 @@ const nunito = Nunito({
 })
 
 const Section = styled.section`
-  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  min-height: 95vh;
   padding: 5.5rem 0;
   width: 100%;
   background-color: var(--text-light);
+
+  @media screen and (min-width: 768px) {
+    padding: 0;
+  }
 `;
 
 const List = styled.ul`
