@@ -138,6 +138,10 @@ const Button = styled.button`
   font-weight: 700;
   cursor: pointer;
 
+  &.delete {
+    background: var(--accident);
+  }
+
   @media screen and (hover: hover) {
     position: relative;
     overflow: hidden;
@@ -157,14 +161,14 @@ const Button = styled.button`
       border-radius: 50%;
       background: var(--text-light);
       opacity: 0.35;
-      transition: transform 0.5s ease-in-out;
+      transition: transform 0.5s ease-out;
       transform-origin: center;
-      width: 20rem;
-      height: 20rem;
+      width: 10rem;
+      height: 10rem;
     }
 
     &:hover::before {
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, -50%) scale(1.5);
     }
   }
 `;
@@ -354,7 +358,7 @@ export default function SingleRoom({ idRoom }) {
                     <span>Modifier</span>
                   </Button>
                   {showButtonsAdmin && (
-                    <Button onClick={handleDelete}>
+                    <Button onClick={handleDelete} className='delete'>
                       <Icon icon="mdi:trash-can-outline" />
                       <span>Supprimer</span>
                     </Button>

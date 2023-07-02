@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import SubmitButton from '@components/buttons/SubmitButton'
-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-
 import Select from 'react-select';
-import { useRouter } from 'next/router';
+
 
 const Section = styled.section`
   display: grid;
   place-items: center;
   align-content: center;
-  min-height: 100vh;
+  min-height: 95vh;
   width: 100%;
   background-color: var(--text-light);
 `;

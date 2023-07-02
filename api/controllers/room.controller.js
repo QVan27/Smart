@@ -13,7 +13,6 @@ const User = db.user;
  * @param {Object} req.body - Request body containing room data.
  * @param {string} req.body.name - Name of the room.
  * @param {string} req.body.image - Image URL of the room.
- * @param {number} req.body.capacity - Capacity of the room.
  * @param {string} req.body.floor - Floor of the room.
  * @param {string} req.body.pointOfContactEmail - Email address of the point of contact for the room.
  * @param {string} req.body.pointOfContactPhone - Phone number of the point of contact for the room.
@@ -26,7 +25,6 @@ const User = db.user;
  * const newRoomData = {
  *     name: "Conference Room",
  *     image: "room.jpg",
- *     capacity: 10,
  *     floor: "2nd floor",
  *     pointOfContactEmail: "contact@example.com",
  *     pointOfContactPhone: "1234567890"
@@ -40,7 +38,7 @@ const User = db.user;
  */
 exports.createRoom = async (req, res, next) => {
   // Check if all required data is present
-  if (!req.body.name || !req.body.image || !req.body.capacity || !req.body.floor || !req.body.pointOfContactEmail || !req.body.pointOfContactPhone) {
+  if (!req.body.name || !req.body.image || !req.body.floor || !req.body.pointOfContactEmail || !req.body.pointOfContactPhone) {
     return next(new ErrorResponse("All data must be provided!", 400));
   }
 
@@ -48,7 +46,6 @@ exports.createRoom = async (req, res, next) => {
   const room = {
     name: req.body.name,
     image: req.body.image,
-    capacity: req.body.capacity,
     floor: req.body.floor,
     pointOfContactEmail: req.body.pointOfContactEmail,
     pointOfContactPhone: req.body.pointOfContactPhone
@@ -149,7 +146,7 @@ exports.getRoomById = async (req, res, next) => {
  * const roomId = "123456";
  * const updatedRoomData = {
  *     name: "Updated Room",
- *     capacity: 20
+ *     floor: "1er"
  * };
  * const req = { params: { id: roomId }, body: updatedRoomData };
  * const res = {

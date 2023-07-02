@@ -13,10 +13,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        capacity: {
-            type: Sequelize.INTEGER,
-            allowNull: false
-        },
         floor: {
             type: Sequelize.STRING,
             allowNull: false

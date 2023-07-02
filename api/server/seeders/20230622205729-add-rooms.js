@@ -26,7 +26,6 @@ module.exports = {
     const rooms = Array.from({ length: 5 }).map(() => ({
       name: names.pop(),
       image: images.pop(),
-      capacity: faker.number.int({ min: 5, max: 30 }),
       floor: faker.helpers.arrayElement(['1er', '2ème', '3ème', '4ème']),
       pointOfContactEmail: faker.internet.email(),
       pointOfContactPhone: faker.phone.number('07 ## ## ## ##'),
