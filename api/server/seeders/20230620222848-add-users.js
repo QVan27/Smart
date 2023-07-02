@@ -3,7 +3,7 @@ const { faker } = require('@faker-js/faker');
 const bcrypt = require('bcryptjs');
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface) => {
     const passwordAdmin = "admin";
     const passwordModerator = "moderator";
     const passwordUser = "user";
@@ -66,7 +66,7 @@ module.exports = {
     await queryInterface.bulkInsert('Users', allUsers);
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface) => {
     await queryInterface.bulkDelete('Users', null, {});
   }
 };

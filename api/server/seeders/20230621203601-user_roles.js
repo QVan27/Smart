@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface) => {
     const role1 = await queryInterface.sequelize.query("SELECT id FROM roles WHERE id = 1", {
       type: queryInterface.sequelize.QueryTypes.SELECT
     });
@@ -37,7 +37,7 @@ module.exports = {
     await queryInterface.bulkInsert('user_roles', userRoleMappings, {});
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface) => {
     await queryInterface.bulkDelete('user_roles', null, {});
   }
 };

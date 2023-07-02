@@ -2,7 +2,7 @@
 const { faker } = require('@faker-js/faker');
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface) => {
     const rooms = await queryInterface.sequelize.query("SELECT id FROM Rooms", {
       type: queryInterface.sequelize.QueryTypes.SELECT
     });
@@ -51,7 +51,7 @@ module.exports = {
     }
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface) => {
     await queryInterface.bulkDelete('user_bookings', null, {});
     await queryInterface.bulkDelete('bookings', null, {});
   }

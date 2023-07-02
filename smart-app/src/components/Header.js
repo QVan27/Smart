@@ -274,6 +274,7 @@ export default function Header() {
     '/': 'Réunions',
     '/[id]': 'Réunion',
     '/create-booking': 'Créer une réunion',
+    '/manage-bookings': 'Gérer les réunions',
     '/settings': 'Paramètres',
     '/settings/edit': fullName,
     '/employees': 'Employés',
@@ -315,7 +316,7 @@ export default function Header() {
             <li className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
             <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
-              <li><Icon icon="material-symbols:manage-accounts" /><Link href='/bookings'>Manager</Link></li>
+              <li><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
             )}
             <li className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
           </List>

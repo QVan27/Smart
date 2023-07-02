@@ -2,6 +2,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const db = require("../models");
 const Booking = db.booking;
 const User = db.user;
+const Room = db.room;
 
 /**
  * Creates a new booking and associates users with the booking.
@@ -175,10 +176,16 @@ exports.getAllBookings = async (req, res, next) => {
   try {
     // Retrieve all bookings from the database, including associated users
     const bookings = await Booking.findAll({
-      include: {
-        model: User,
-        attributes: ['id', 'position', 'picture', 'email'] // Include specific user attributes you want to fetch
-      }
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'position', 'picture', 'email'] // Include specific user attributes you want to fetch
+        },
+        {
+          model: Room,
+          attributes: ['id', 'name'] // Include specific room attributes you want to fetch
+        }
+      ]
     });
 
     res.send(bookings);

@@ -186,7 +186,7 @@ export default function Home() {
             .map((booking, i) => {
               const firstFiveUsers = booking?.users.slice(0, 5);
               const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
-            
+
               return (
                 <Link key={i} href={`/${booking.id}`}>
                   <BookingCard key={i} className={nunito.className}>
