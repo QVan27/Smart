@@ -97,7 +97,7 @@ const Container = styled.div`
     &__container {
       position: relative;
       background-color: var(--text-light);
-      padding: 0.875rem;
+      padding: 1.75rem;
       border-radius: 0.3125rem;
 
       @media screen and (min-width: 576px) {
@@ -273,7 +273,8 @@ export default function SingleRoom({ idRoom }) {
     fetchUser();
   }, []);
 
-  const showButtons = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
+  const showButtonsAdminOrModerator = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
+  const showButtonsAdmin = user?.roles.includes('ADMIN');
 
   const handleDelete = async () => {
     try {
@@ -351,17 +352,19 @@ export default function SingleRoom({ idRoom }) {
             <p className='floor'>Étage(s) : <span>{data?.floor}</span></p>
             <p className='email'>Email : <span>{data?.pointOfContactEmail}</span></p>
             <p className='phone'>Téléphone : <span>{data?.pointOfContactPhone}</span></p>
-            {showButtons && (
+            {showButtonsAdminOrModerator && (
               <>
                 <div className='buttons'>
                   <Button onClick={handleClick}>
                     <Icon icon="mdi:pencil" />
                     <span>Modifier</span>
                   </Button>
-                  <Button onClick={handleDelete}>
-                    <Icon icon="mdi:trash-can-outline" />
-                    <span>Supprimer</span>
-                  </Button>
+                  {showButtonsAdmin && (
+                    <Button onClick={handleDelete}>
+                      <Icon icon="mdi:trash-can-outline" />
+                      <span>Supprimer</span>
+                    </Button>
+                  )}
                 </div>
                 <div className={`edit ${isActive ? 'active' : ''}`}>
                   <div className='edit__container'>
