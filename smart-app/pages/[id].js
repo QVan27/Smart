@@ -203,11 +203,12 @@ const ListItem = styled.li`
   gap: 0.9375rem;
 
   .list__img {
+    border-radius: 50%;
+    box-shadow: var(--secondary-shadow);
+    overflow: hidden;
+    width: 2.5rem;
     min-width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: var(--secondary-shadow);
 
     img {
       width: 100%;

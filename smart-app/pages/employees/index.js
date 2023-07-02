@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -98,40 +99,43 @@ const List = styled.ul`
   padding-bottom: 1.88rem;
 `;
 
-const ListItem = styled.li`
+const User = styled.li`
   display: flex;
   padding: 0rem 0rem 0rem 0.9375rem;
   align-items: center;
   gap: 0.9375rem;
 
-  .list__img {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: var(--secondary-shadow);
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9375rem;
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .list__img {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: var(--secondary-shadow);
+  
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  
+    .list__text {
+      color: var(--primary-text);
+      font-size: 0.875rem;
+  
+      &__job {
+        color: var(--secondary-text);
+        font-size: 0.8rem;
+        text-transform: capitalize;
+      }
     }
   }
 
-  .list__text {
-    color: var(--primary-text);
-    font-size: 0.875rem;
-
-    &__job {
-      color: var(--secondary-text);
-      font-size: 0.8rem;
-      text-transform: capitalize;
-    }
-  }
-
-  &.active {
-    background-color: var(--light-gray);
-  }
 `;
 
 export default function Edit() {
@@ -252,22 +256,21 @@ export default function Edit() {
                 })
                 .sort((a, b) => a.firstName.localeCompare(b.firstName))
                 .map((user) => (
-                  <ListItem
-                    key={user.id}
-                    className='list__item'
-                  >
-                    <div className='list__img'>
-                      <img src={user.picture} alt={user.firstName} />
-                    </div>
-                    <div className='list__text'>
-                      <div className='list__text__name'>
-                        {user.firstName + ' ' + user.lastName}
+                  <User key={user.id}>
+                    <Link href={`/employees/${user.id}`} className='list__link'>
+                      <div className='list__img'>
+                        <img src={user.picture} alt={user.firstName} />
                       </div>
-                      <div className='list__text__job'>
-                        {user.position}
+                      <div className='list__text'>
+                        <div className='list__text__name'>
+                          {user.firstName + ' ' + user.lastName}
+                        </div>
+                        <div className='list__text__job'>
+                          {user.position}
+                        </div>
                       </div>
-                    </div>
-                  </ListItem>
+                    </Link>
+                  </User>
                 ))}
           </List>
         </Container>

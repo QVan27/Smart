@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { Nunito } from 'next/font/google'
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
-import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
 import SubmitButton from '@components/buttons/SubmitButton';
 
@@ -14,30 +15,16 @@ const nunito = Nunito({
 const Section = styled.section`
   display: grid;
   place-items: center;
-  align-content: center;
-  min-height: 95vh;
   background-color: var(--text-light);
+  min-height: 95vh;
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  width: min(100%, 31.25rem);
   margin-inline: auto;
-
-  .image {
-    border-radius: 0.3125rem;
-    height: 15.375rem;
-    overflow: hidden;
-    box-shadow: var(--primary-shadow);
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
+  width: min(100%, 414px);
 
   .buttons {
     display: flex;
@@ -45,31 +32,6 @@ const Container = styled.div`
     justify-content: center;
     gap: 0.625rem;
     margin-top: 2rem;
-  }
-
-  .name,
-  .floor,
-  .email,
-  .phone {
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-  }
-
-  .floor,
-  .email,
-  .phone {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-
-    span {
-      font-size: 0.875rem;
-      font-style: normal;
-      font-weight: 500;
-      line-height: normal;
-    }
   }
 
   .edit {
@@ -120,6 +82,72 @@ const Container = styled.div`
         
         path { fill: var(--primary-text); }
       }
+    }
+  }
+`;
+
+const Info = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.88rem;
+  margin-bottom: 3.17rem;
+
+  .img {
+    width: 9.375rem;
+    height: 9.375rem;
+    border-radius: 50px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: var(--secondary-shadow);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .content {
+    p:first-child {
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    p:last-child {
+      color: var(--secondary-text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-top: 0.3125rem;
+    }
+  }
+`;
+
+const List = styled.ul`
+  li {
+    position: relative;
+
+    p:first-child {
+      margin-bottom: 0.3125rem;
+      color: var(--secondary-text);
+      font-size: 0.75rem;
+    }
+
+    p:last-child {
+      color: #23252C;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -0.3125rem;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: var(--secondary-text);
     }
   }
 `;
@@ -203,49 +231,72 @@ const Form = styled.form`
   }
 `;
 
-export default function SingleRoom({ idRoom }) {
+export default function SingleEmployee() {
   const router = useRouter();
   const { id } = router.query;
-  const [data, setData] = useState(null);
-  const [user, setUser] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [isActive, setIsActive] = useState(false);
-
-  const [roomName, setRoomName] = useState('');
-  const [roomFloor, setRoomFloor] = useState('');
-  const [roomEmail, setRoomEmail] = useState('');
-  const [roomPhone, setRoomPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [position, setPosition] = useState('');
 
   const handleClick = () => {
     setIsActive(!isActive);
   };
 
+  const handleEmailInputChange = (e) => {
+    setEmail(e.target.value)
+  };
+
+  const handlePositionInputChange = (e) => {
+    setPosition(e.target.value)
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': localStorage.getItem('accessToken')
+        }
+      });
+
+      if (response.ok) {
+        router.push('/employees');
+      } else {
+        console.log('Failed to delete the room.');
+      }
+    } catch (error) {
+      console.error('Error deleting the room:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchRoom = async () => {
+    const fetchUserInfo = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/rooms/${id}`, {
+        const response = await fetch(`http://localhost:8080/api/users/${id}`, {
           headers: {
             'x-access-token': localStorage.getItem('accessToken')
           }
         });
 
         if (response.ok) {
-          const room = await response.json();
-          setData(room);
+          const user = await response.json();
+          setUserInfo(user);
         } else {
-          console.log('Failed to fetch booking information.');
+          console.log('Failed to fetch user information.');
         }
       } catch (error) {
-        console.error('Error fetching booking information:', error);
+        console.error('Error fetching user information:', error);
       }
     };
 
-    if (id) {
-      fetchRoom();
-    }
-  }, [id]);
+    fetchUserInfo();
+  }, []);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchCurrentUser = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/user', {
           headers: {
@@ -255,7 +306,7 @@ export default function SingleRoom({ idRoom }) {
 
         if (response.ok) {
           const user = await response.json();
-          setUser(user);
+          setCurrentUser(user);
         } else {
           console.log('Failed to fetch user information.');
         }
@@ -264,89 +315,61 @@ export default function SingleRoom({ idRoom }) {
       }
     };
 
-    fetchUser();
+    fetchCurrentUser();
   }, []);
 
-  const showButtonsAdminOrModerator = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
-  const showButtonsAdmin = user?.roles.includes('ADMIN');
-
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/rooms/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': localStorage.getItem('accessToken')
-        }
-      });
-
-      if (response.ok) {
-        router.push('/rooms');
-      } else {
-        console.log('Failed to delete the room.');
-      }
-    } catch (error) {
-      console.error('Error deleting the room:', error);
-    }
-  };
+  const showButtonsAdminOrModerator = currentUser?.roles.includes('MODERATOR') || currentUser?.roles.includes('ADMIN');
+  const showButtonsAdmin = currentUser?.roles.includes('ADMIN');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:8080/api/rooms/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/users/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'x-access-token': localStorage.getItem('accessToken')
         },
         body: JSON.stringify({
-          name: roomName,
-          pointOfContactEmail: roomEmail,
-          pointOfContactPhone: roomPhone,
-          floor: roomFloor
+          email: email,
+          position: position,
         }),
       });
 
       if (response.ok) {
-        router.push('/rooms');
+        router.push('/employees');
       } else {
-        console.log('Failed to update the room.');
+        console.log('Failed to update the employee.');
       }
     } catch (error) {
-      console.error('Error updating the room:', error);
+      console.error('Error updating the employee:', error);
     }
   };
 
-  const handleRoomNameInputChange = (e) => {
-    setRoomName(e.target.value)
-  };
-
-  const handleRoomFloorInputChange = (e) => {
-    setRoomFloor(e.target.value)
-  };
-
-  const handleRoomEmailInputChange = (e) => {
-    setRoomEmail(e.target.value)
-  };
-
-  const handleRoomPhoneInputChange = (e) => {
-    setRoomPhone(e.target.value)
-  };
-
   return (
-    <>
-      <Section className={nunito.className}>
-        <Wrap>
-          <Container>
-            <div className="image">
-              <img src={data?.image} alt={data?.name} />
+    <Section className={nunito.className}>
+      <Wrap>
+        <Container>
+          <Info>
+            <div className='img'>
+              <img src={userInfo?.picture} alt="" />
             </div>
-            <p className='name'>{data?.name}</p>
-            <p className='floor'>Étage(s) : <span>{data?.floor}</span></p>
-            <p className='email'>Email : <span>{data?.pointOfContactEmail}</span></p>
-            <p className='phone'>Téléphone : <span>{data?.pointOfContactPhone}</span></p>
-            {showButtonsAdminOrModerator && (
+            <div className='content'>
+              <p>{userInfo?.firstName + " " + userInfo?.lastName}</p>
+              <p>{userInfo?.email}</p>
+            </div>
+          </Info>
+          <List>
+            <li>
+              <p>Position</p>
+              <p>{userInfo?.position}</p>
+            </li>
+          </List>
+          {userInfo?.roles.includes('ADMIN') ? (
+            null
+          ) : (
+            showButtonsAdminOrModerator && (
               <>
                 <div className='buttons'>
                   <Button onClick={handleClick}>
@@ -368,54 +391,36 @@ export default function SingleRoom({ idRoom }) {
                     <p>Modifier les informations de la salle</p>
                     <Form onSubmit={handleSubmit}>
                       <div className='form-group'>
-                        <label htmlFor='name'>Nom de la salle :</label>
-                        <input
-                          type='text'
-                          id='name'
-                          name='name'
-                          placeholder={data?.name}
-                          value={roomName}
-                          onChange={handleRoomNameInputChange} />
-                      </div>
-                      <div className='form-group'>
                         <label htmlFor='email'>Email :</label>
                         <input
                           type='text'
                           id='email'
                           name='email'
-                          placeholder={data?.pointOfContactEmail}
-                          value={roomEmail}
-                          onChange={handleRoomEmailInputChange} />
+                          placeholder={userInfo?.email}
+                          value={email}
+                          onChange={handleEmailInputChange}
+                        />
                       </div>
                       <div className='form-group'>
-                        <label htmlFor='phone'>Téléphone :</label>
+                        <label htmlFor='email'>Position :</label>
                         <input
                           type='text'
-                          id='phone'
-                          name='phone'
-                          placeholder={data?.pointOfContactPhone}
-                          value={roomPhone}
-                          onChange={handleRoomPhoneInputChange} />
-                      </div>
-                      <div className='form-group'>
-                        <label htmlFor='floor'>Étage(s) :</label>
-                        <input
-                          type='text'
-                          id='floor'
-                          name='floor'
-                          placeholder={data?.floor}
-                          value={roomFloor}
-                          onChange={handleRoomFloorInputChange} />
+                          id='email'
+                          name='email'
+                          placeholder={userInfo?.position}
+                          value={position}
+                          onChange={handlePositionInputChange}
+                        />
                       </div>
                       <SubmitButton text="Valider" backgroundColor="var(--accident)" />
                     </Form>
                   </div>
                 </div>
               </>
-            )}
-          </Container>
-        </Wrap>
-      </Section>
-    </>
+            )
+          )}
+        </Container>
+      </Wrap>
+    </Section>
   )
 }

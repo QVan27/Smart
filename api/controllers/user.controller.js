@@ -6,22 +6,6 @@ const Room = db.room;
 const bcrypt = require("bcryptjs");
 require('dotenv').config()
 
-exports.allAccess = (req, res) => {
-    res.status(200).send("Public Content.");
-};
-
-exports.userBoard = (req, res) => {
-    res.status(200).send("User Content.");
-};
-
-exports.adminBoard = (req, res) => {
-    res.status(200).send("Admin Content.");
-};
-
-exports.moderatorBoard = (req, res) => {
-    res.status(200).send("Moderator Content.");
-};
-
 /**
  * Retrieves all users from the database.
  *
@@ -66,11 +50,25 @@ exports.getUserById = async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id);
 
+        const roles = await user.getRoles();
+
+        const userRoles = roles.map(role => role.name);
+
         if (!user) {
             return next(new ErrorResponse("User does not exist!", 404));
         }
 
-        res.status(200).send(user);
+        const userInfo = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            position: user.position,
+            picture: user.picture,
+            roles: userRoles,
+        };
+
+        res.status(200).send(userInfo);
     } catch (err) {
         next(new ErrorResponse(err.message, 500));
     }
