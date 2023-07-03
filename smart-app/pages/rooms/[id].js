@@ -379,6 +379,7 @@ export default function SingleRoom({ idRoom }) {
                           name='name'
                           placeholder={data?.name}
                           value={roomName}
+                          required
                           onChange={handleRoomNameInputChange} />
                       </div>
                       <div className='form-group'>
@@ -389,6 +390,7 @@ export default function SingleRoom({ idRoom }) {
                           name='email'
                           placeholder={data?.pointOfContactEmail}
                           value={roomEmail}
+                          required
                           onChange={handleRoomEmailInputChange} />
                       </div>
                       <div className='form-group'>
@@ -399,6 +401,7 @@ export default function SingleRoom({ idRoom }) {
                           name='phone'
                           placeholder={data?.pointOfContactPhone}
                           value={roomPhone}
+                          required
                           onChange={handleRoomPhoneInputChange} />
                       </div>
                       <div className='form-group'>
@@ -409,6 +412,7 @@ export default function SingleRoom({ idRoom }) {
                           name='floor'
                           placeholder={data?.floor}
                           value={roomFloor}
+                          required
                           onChange={handleRoomFloorInputChange} />
                       </div>
                       <SubmitButton text="Valider" backgroundColor="var(--accident)" />

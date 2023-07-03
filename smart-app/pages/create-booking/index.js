@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import { Nunito } from 'next/font/google'
+import Select from 'react-select';
 import styled from "styled-components";
-import Wrap from '@components/Wrap'
-import { Orbitron, Nunito } from 'next/font/google'
-import SubmitButton from '@components/buttons/SubmitButton'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import Select from 'react-select';
-
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  weights: [400, 700],
-})
+import Wrap from '@components/Wrap'
+import SubmitButton from '@components/buttons/SubmitButton'
+import ErrorMessage from '@components/form/ErrorMessage';
+import SuccessMessage from '@components/form/SuccessMessage';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -66,17 +63,6 @@ const Form = styled.form`
   }
 `;
 
-const ErrorMessage = styled.p`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  text-align: center;
-  top: -25px;
-  color: var(--accident);
-  font-size: 0.875rem;
-`;
-
 export default function CreateBooking() {
   const router = useRouter();
   const [start, setStartDate] = useState(null);
@@ -86,6 +72,7 @@ export default function CreateBooking() {
   const [purpose, setPurpose] = useState('');
   const [selectedOptions, setSelectedOptions] = useState();
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [optionList, setOptionList] = useState([]);
   const userIds = selectedOptions?.map(option => option.value);
 
@@ -164,13 +151,19 @@ export default function CreateBooking() {
       });
 
       if (res.ok) {
-        console.log('Réunion créé avec succès');
-        router.push('/');
+        setError('');
+        setSuccess('Réunion créé avec succès');
+
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
       } else {
         console.log('Erreur de création de réunion');
+        setError('Erreur de création de réunion');
       }
     } catch (error) {
       console.error('Erreur de création de réunion:', error);
+      setError('Erreur de création de réunion');
     }
   }
 
@@ -183,7 +176,8 @@ export default function CreateBooking() {
       <Section className={nunito.className}>
         <Wrap>
           <Form onSubmit={handleSubmit}>
-            {error && <ErrorMessage className={orbitron.className}>{error}</ErrorMessage>}
+            {success && <SuccessMessage text={success} />}
+            {error && <ErrorMessage text={error} />}
             <div className='title'>
               <label htmlFor='purpose'>Objet de la réunion</label>
               <input

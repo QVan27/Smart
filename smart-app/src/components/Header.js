@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { useRouter } from 'next/router';
-import { Icon } from '@iconify/react';
-import { Nunito, Orbitron } from 'next/font/google'
 import Link from 'next/link';
+import { Nunito } from 'next/font/google'
+import styled from "styled-components";
+import { Icon } from '@iconify/react';
 
 const nunito = Nunito({
-  subsets: ['latin'],
-  weights: [400, 500, 700],
-})
-
-const orbitron = Orbitron({
   subsets: ['latin'],
   weights: [400, 500, 700],
 })
@@ -94,16 +89,30 @@ const Container = styled.header`
 const BackButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 0.625rem;  
+  gap: 0.3125rem;  
   background: none;
   border: none;
   font-size: 0.875rem;
   color: var(--text-light);
   cursor: pointer;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
   
   svg {
     width: 1.25rem;
     height: 1.25rem;
+  }
+
+  @media screen and (hover: hover) {
+    svg { transition: transform 0.3s ease-out; }
+
+    &:hover {
+      svg {
+        transform: translateX(-0.16rem);
+      }
+    }
   }
 `;
 

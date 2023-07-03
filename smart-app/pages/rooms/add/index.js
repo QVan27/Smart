@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import SubmitButton from '@components/buttons/SubmitButton'
+import ErrorMessage from '@components/form/ErrorMessage';
+import SuccessMessage from '@components/form/SuccessMessage';
 
 
 const Section = styled.section`
@@ -16,6 +18,7 @@ const Section = styled.section`
 
 const Form = styled.form`
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 1.5rem;
   margin-inline: auto;
@@ -52,19 +55,36 @@ const Form = styled.form`
   }
 `;
 
+const isEmailValid = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  return emailRegex.test(email);
+};
 
 export default function AddRoom() {
   const router = useRouter();
   const [name, setName] = useState(null);
   const [image, setImage] = useState('https://images.unsplash.com/photo-1542089363-bba089ffaa25?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
   const [floor, setFloor] = useState();
-  const [pointOfContactEmail, setPointOfContactEmail] = useState([]);
+  const [pointOfContactEmail, setPointOfContactEmail] = useState('');
   const [pointOfContactPhone, setPointOfContactPhone] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     try {
+      if (!name || !image || !floor || !pointOfContactPhone) {
+        setError('Veuillez remplir tous les champs');
+        return;
+      }
+
+      if (!isEmailValid(pointOfContactEmail)) {
+        setError('Veuillez entrer une adresse email valide');
+        return;
+      }
+
       const res = await fetch('http://localhost:8080/api/rooms', {
         method: 'POST',
         headers: {
@@ -81,13 +101,19 @@ export default function AddRoom() {
       });
 
       if (res.ok) {
-        console.log('Réunion créé avec succès');
-        router.push('/rooms');
+        setError('');
+        setSuccess('Salle créé avec succès');
+
+        setTimeout(() => {
+          router.push('/rooms');
+        }, 2000);
       } else {
-        console.log('Erreur de création de réunion');
+        console.log('Erreur de création de la salle');
+        setError('Erreur de création de la salle');
       }
     } catch (error) {
-      console.error('Erreur de création de réunion:', error);
+      console.error('Erreur de création de la salle:', error);
+      setError('Erreur de création de la salle');
     }
   }
 
@@ -116,6 +142,8 @@ export default function AddRoom() {
       <Section>
         <Wrap>
           <Form onSubmit={handleSubmit}>
+            {success && <SuccessMessage text={success} />}
+            {error && <ErrorMessage text={error} />}
             <div className='name'>
               <label htmlFor='name'>Nom de la salle</label>
               <input

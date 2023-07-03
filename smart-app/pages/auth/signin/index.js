@@ -7,6 +7,8 @@ import Wrap from '@components/Wrap'
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import SubmitButton from '@components/buttons/SubmitButton'
+import ErrorMessage from '@components/form/ErrorMessage';
+import SuccessMessage from '@components/form/SuccessMessage';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -45,6 +47,7 @@ const Redirect = styled.p`
 
 const Form = styled.form`
   display: flex;
+  position: relative;
   flex-direction: column;
   width: min(100%, 400px);
 
@@ -69,6 +72,8 @@ export default function SignIn() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -86,12 +91,20 @@ export default function SignIn() {
         const data = await response.json();
 
         localStorage.setItem('accessToken', data.accessToken);
-        router.push('/');
+
+        setError('');
+        setSuccess('Connexion réussie. Redirection en cours...');
+
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
       } else {
         console.log('Échec de la connexion.');
+        setError('Échec de la connexion.');
       }
     } catch (error) {
       console.error('Erreur lors de la requête de connexion:', error);
+      setError('Erreur lors de la requête de connexion.');
     }
   };
 
@@ -118,6 +131,8 @@ export default function SignIn() {
         </div>
         <SubTitle>Connecter votre compte</SubTitle>
         <Form onSubmit={handleSubmit}>
+          {success && <SuccessMessage text={success} />}
+          {error && <ErrorMessage text={error} />}
           <input
             type="text"
             id="email"

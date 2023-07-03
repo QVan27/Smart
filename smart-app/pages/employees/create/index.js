@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import styled from 'styled-components'
-import { Orbitron } from 'next/font/google'
 import Wrap from '@components/Wrap'
 import { useRouter } from 'next/router';
 import SubmitButton from '@components/buttons/SubmitButton'
 import Select from 'react-select';
-
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  weights: [400, 700],
-})
+import ErrorMessage from '@components/form/ErrorMessage';
+import SuccessMessage from '@components/form/SuccessMessage';
 
 const Section = styled.section`
   background-color: var(--text-light);
@@ -56,17 +52,6 @@ const Form = styled.form`
   }
 `;
 
-const ErrorMessage = styled.p`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  text-align: center;
-  top: -25px;
-  color: var(--accident);
-  font-size: 0.875rem;
-`;
-
 const isEmailValid = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -85,6 +70,7 @@ export default function CreateEmploye() {
   const [password, setPassword] = useState('');
   const [picture, setPicture] = useState('https://avatars.githubusercontent.com/u/12041934');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
 
   const handleSubmit = async (e) => {
@@ -119,8 +105,12 @@ export default function CreateEmploye() {
       });
 
       if (res.ok) {
-        console.log('Compte créé');
-        router.push('/employees');
+        setError('');
+        setSuccess('Compte créé avec succès');
+
+        setTimeout(() => {
+          router.push('/employees');
+        }, 2000);
       } else {
         setError('Erreur de création de compte');
       }
@@ -142,7 +132,8 @@ export default function CreateEmploye() {
         <Container>
           <Title>Ajouter un compte</Title>
           <Form onSubmit={handleSubmit}>
-            {error && <ErrorMessage className={orbitron.className}>{error}</ErrorMessage>}
+            {success && <SuccessMessage text={success} />}
+            {error && <ErrorMessage text={error} />}
             <input
               type="text"
               id="firstName"
