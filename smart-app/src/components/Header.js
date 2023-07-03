@@ -289,11 +289,16 @@ export default function Header() {
     '/settings': 'Paramètres',
     '/settings/edit': fullName,
     '/employees': 'Employés',
+    '/employees/[id]': 'Employé(e)',
     '/rooms': 'Salles',
     '/rooms/[id]': 'Salle',
     '/rooms/edit': 'Modifier une salle',
   };
   const headerText = headerTexts[router.pathname] || '';
+
+  const handleLinkClick = () => {
+    setIsActive(false);
+  };
 
   return (
     <>
@@ -323,18 +328,18 @@ export default function Header() {
           </div>
           <div className='hLine'></div>
           <List>
-            <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
-            <li className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
-            <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
-              <li><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
+              <li onClick={handleLinkClick} className={router.pathname === "/manage-bookings" ? "active" : ""}><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
             )}
-            <li className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
             <li onClick={handleLogout}><Icon icon="iconamoon:exit" /><span>Déconnexion</span></li>
           </List>
         </div>
       </SideBar>
-      <Overlay className={isActive ? 'active' : ''} />
+      <Overlay onClick={handleLinkClick} className={isActive ? 'active' : ''} />
     </>
   );
 }
