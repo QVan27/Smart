@@ -391,7 +391,7 @@ export default function SingleEmployee() {
                     <div className='edit__close' onClick={handleClick}>
                       <Icon icon="carbon:close-filled" />
                     </div>
-                    <p>Modifier les informations de la salle</p>
+                    <p>Modifier les informations</p>
                     <Form onSubmit={handleSubmit}>
                       <div className='form-group'>
                         <label htmlFor='email'>Email :</label>

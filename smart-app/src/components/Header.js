@@ -303,6 +303,7 @@ export default function Header() {
     '/rooms': 'Salles',
     '/rooms/[id]': 'Salle',
     '/rooms/edit': 'Modifier une salle',
+    '/rooms/add': 'Ajouter une salle',
   };
   const headerText = headerTexts[router.pathname] || '';
 

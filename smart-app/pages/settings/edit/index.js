@@ -61,7 +61,7 @@ const Send = styled.div`
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    background: var(--main);
+    background: var(--accident);
     color: var(--text-light);
     border: none;
     border-radius: 30px;
