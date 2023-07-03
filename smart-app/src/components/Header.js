@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
-import { Nunito } from 'next/font/google'
+import { Nunito, Orbitron } from 'next/font/google'
 import Link from 'next/link';
 
 const nunito = Nunito({
+  subsets: ['latin'],
+  weights: [400, 500, 700],
+})
+
+const orbitron = Orbitron({
   subsets: ['latin'],
   weights: [400, 500, 700],
 })
@@ -86,12 +91,13 @@ const Container = styled.header`
   }
 `;
 
-const LogoutButton = styled.button`
-  display: grid;
-  place-items: center;
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;  
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: var(--text-light);
   cursor: pointer;
   
@@ -209,7 +215,8 @@ const List = styled.ul`
       height: 1.25rem;
     }
 
-    a {
+    a,
+    span {
       font-size: 0.875rem;
     }
   }
@@ -245,6 +252,10 @@ export default function Header() {
     }
   };
 
+  const handleBackClick = () => {
+    router.back();
+  };
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -278,11 +289,17 @@ export default function Header() {
     '/settings': 'Paramètres',
     '/settings/edit': fullName,
     '/employees': 'Employés',
+    '/employees/[id]': 'Employé(e)',
+    '/employees/create': 'Ajouter un(e) employé(e)',
     '/rooms': 'Salles',
     '/rooms/[id]': 'Salle',
     '/rooms/edit': 'Modifier une salle',
   };
   const headerText = headerTexts[router.pathname] || '';
+
+  const handleLinkClick = () => {
+    setIsActive(false);
+  };
 
   return (
     <>
@@ -296,7 +313,7 @@ export default function Header() {
               <span>{headerText}</span>
             </div>
           </div>
-          <LogoutButton onClick={handleLogout}><Icon icon="iconamoon:exit" /></LogoutButton>
+          <BackButton onClick={handleBackClick}><Icon icon="ep:back" /><span>Retour</span></BackButton>
         </div>
       </Container>
       <SideBar className={isActive ? 'active' : ''}>
@@ -312,17 +329,18 @@ export default function Header() {
           </div>
           <div className='hLine'></div>
           <List>
-            <li className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
-            <li className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
-            <li className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/" ? "active" : ""}><Icon icon="uil:schedule" /><Link href='/'>Réunions</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
-              <li><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
+              <li onClick={handleLinkClick} className={router.pathname === "/manage-bookings" ? "active" : ""}><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
             )}
-            <li className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
+            <li onClick={handleLinkClick} className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
+            <li onClick={handleLogout}><Icon icon="iconamoon:exit" /><span>Déconnexion</span></li>
           </List>
         </div>
       </SideBar>
-      <Overlay className={isActive ? 'active' : ''} />
+      <Overlay onClick={handleLinkClick} className={isActive ? 'active' : ''} />
     </>
   );
 }

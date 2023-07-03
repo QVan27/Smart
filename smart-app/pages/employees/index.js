@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -29,7 +30,24 @@ const Research = styled.div`
     margin-inline: auto;
   }
 
-  span { margin-bottom: 1.25rem; }
+  
+  .add {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+    margin-bottom: 1.25rem;
+
+    a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: underline;
+      transition: opacity 0.5s ease-out;
+
+      @media screen and (hover: hover) { &:hover { opacity: 0.65; } }
+    }
+
+    @media screen and (min-width: 1200px) { padding-right: 0; }
+  }
   
   .filters {
     display: flex;
@@ -98,48 +116,52 @@ const List = styled.ul`
   padding-bottom: 1.88rem;
 `;
 
-const ListItem = styled.li`
+const User = styled.li`
   display: flex;
   padding: 0rem 0rem 0rem 0.9375rem;
   align-items: center;
   gap: 0.9375rem;
 
-  .list__img {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: var(--secondary-shadow);
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9375rem;
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .list__img {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: var(--secondary-shadow);
+  
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  
+    .list__text {
+      color: var(--primary-text);
+      font-size: 0.875rem;
+  
+      &__job {
+        color: var(--secondary-text);
+        font-size: 0.8rem;
+        text-transform: capitalize;
+      }
     }
   }
 
-  .list__text {
-    color: var(--primary-text);
-    font-size: 0.875rem;
-
-    &__job {
-      color: var(--secondary-text);
-      font-size: 0.8rem;
-      text-transform: capitalize;
-    }
-  }
-
-  &.active {
-    background-color: var(--light-gray);
-  }
 `;
 
 export default function Edit() {
   const [users, setUsers] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchUsersInfo = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/users', {
           headers: {
@@ -149,6 +171,7 @@ export default function Edit() {
 
         if (response.ok) {
           const user = await response.json();
+
           setUsers(user);
         } else {
           console.log('Failed to fetch user information.');
@@ -158,17 +181,43 @@ export default function Edit() {
       }
     };
 
-    fetchUserInfo();
+    fetchUsersInfo();
   }, []);
 
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
-  };
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/user', {
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken')
+          }
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+
+          setCurrentUser(user);
+        } else {
+          console.log('Failed to fetch user information.');
+        }
+      } catch (error) {
+        console.error('Error fetching user information:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  const handleFilterChange = (filter) => { setActiveFilter(filter); };
+  const showButtonsAdmin = currentUser?.roles.includes('ADMIN');
 
   return (
     <Section className={nunito.className}>
       <Research>
-        <span>Groupes</span>
+        <div className='add'>
+          <span>Groupes</span>
+          {showButtonsAdmin && <Link href="/employees/create">Ajouter</Link>}
+        </div>
         <div className='filters'>
           <div
             className={`filter ${activeFilter === 'all' ? 'active' : ''}`}
@@ -252,22 +301,21 @@ export default function Edit() {
                 })
                 .sort((a, b) => a.firstName.localeCompare(b.firstName))
                 .map((user) => (
-                  <ListItem
-                    key={user.id}
-                    className='list__item'
-                  >
-                    <div className='list__img'>
-                      <img src={user.picture} alt={user.firstName} />
-                    </div>
-                    <div className='list__text'>
-                      <div className='list__text__name'>
-                        {user.firstName + ' ' + user.lastName}
+                  <User key={user.id}>
+                    <Link href={`/employees/${user.id}`} className='list__link'>
+                      <div className='list__img'>
+                        <img src={user.picture} alt={user.firstName} />
                       </div>
-                      <div className='list__text__job'>
-                        {user.position}
+                      <div className='list__text'>
+                        <div className='list__text__name'>
+                          {user.firstName + ' ' + user.lastName}
+                        </div>
+                        <div className='list__text__job'>
+                          {user.position}
+                        </div>
                       </div>
-                    </div>
-                  </ListItem>
+                    </Link>
+                  </User>
                 ))}
           </List>
         </Container>

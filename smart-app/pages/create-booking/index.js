@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
-import { Nunito } from 'next/font/google'
-import { Icon } from '@iconify/react';
-import { formatDate, formatTime } from '@utils/dateFormats';
-import Link from 'next/link';
-import Image from 'next/image';
+import { Orbitron, Nunito } from 'next/font/google'
 import SubmitButton from '@components/buttons/SubmitButton'
-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-
 import Select from 'react-select';
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weights: [400, 700],
+})
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  weights: [400, 700],
+})
 
 const Section = styled.section`
   display: grid;
   place-items: center;
   align-content: center;
-  min-height: 100vh;
+  min-height: 95vh;
   width: 100%;
   background-color: var(--text-light);
 `;
 
 const Form = styled.form`
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 1.5rem;
+  margin-inline: auto;
+  width: min(414px, 100%);
 
   .title,
   .rooms,
@@ -41,8 +49,7 @@ const Form = styled.form`
     gap: 0.375rem;
   }
 
-  input,
-  select {
+  .title input {
     background-color: transparent;
     border: none;
     border-bottom: 1px solid var(--secondary-text);
@@ -59,19 +66,27 @@ const Form = styled.form`
   }
 `;
 
+const ErrorMessage = styled.p`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+  top: -25px;
+  color: var(--accident);
+  font-size: 0.875rem;
+`;
+
 export default function CreateBooking() {
-  const [start, setStartDate] = useState('');
-  const [end, setEndDate] = useState('');
-  const [roomBooking, setRoomBooking] = useState('1');
+  const router = useRouter();
+  const [start, setStartDate] = useState(null);
+  const [end, setEndDate] = useState(null);
+  const [roomBooking, setRoomBooking] = useState();
   const [rooms, setRooms] = useState([]);
   const [purpose, setPurpose] = useState('');
   const [selectedOptions, setSelectedOptions] = useState();
+  const [error, setError] = useState('');
   const [optionList, setOptionList] = useState([]);
-  // const [accessToken, setAccessToken] = useState(
-  //   typeof localStorage !== 'undefined' ? localStorage.getItem('accessToken') : null
-  // );
-  const startDate = start?.$d
-  const endDate = end?.$d
   const userIds = selectedOptions?.map(option => option.value);
 
   useEffect(() => {
@@ -127,20 +142,26 @@ export default function CreateBooking() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const formattedStartDate = startDate.toISOString();
-    const formattedEndDate = endDate.toISOString();
-
     try {
+      if (!start || !end) {
+        setError('Veuillez sélectionner une date de début et de fin');
+        return;
+      }
+
       const res = await fetch('http://localhost:8080/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-access-token': localStorage.getItem('accessToken')
         },
-        body: JSON.stringify({ purpose, startDate: formattedStartDate, endDate: formattedEndDate, roomBooking, userIds }),
+        body: JSON.stringify({
+          startDate: start.$d.toLocaleDateString() + ' ' + start.$d.toLocaleTimeString(),
+          endDate: end.$d.toLocaleDateString() + ' ' + end.$d.toLocaleTimeString(),
+          purpose,
+          roomId: roomBooking?.value,
+          userIds
+        }),
       });
-
-      console.log(formattedStartDate, formattedEndDate)
 
       if (res.ok) {
         console.log('Réunion créé avec succès');
@@ -153,23 +174,16 @@ export default function CreateBooking() {
     }
   }
 
-  const handleRoomChange = (e) => {
-    setRoomBooking(e.target.value);
-  };
-
   const handlePurposeChange = (e) => {
     setPurpose(e.target.value);
   };
 
-  const handleSelect = (data) => {
-    setSelectedOptions(data);
-  };
-
   return (
     <>
-      <Section>
+      <Section className={nunito.className}>
         <Wrap>
           <Form onSubmit={handleSubmit}>
+            {error && <ErrorMessage className={orbitron.className}>{error}</ErrorMessage>}
             <div className='title'>
               <label htmlFor='purpose'>Objet de la réunion</label>
               <input
@@ -177,42 +191,50 @@ export default function CreateBooking() {
                 id="purpose"
                 placeholder='Optimisation UI/UX : Actions Concrètes'
                 value={purpose}
+                required
                 onChange={handlePurposeChange} />
             </div>
             <div className='dates'>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                 <DateTimePicker
                   label="Début de la réunion"
-                  value={startDate}
+                  value={start?.$d}
                   onChange={(newValue) => setStartDate(newValue)}
                 />
                 <DateTimePicker
                   label="Fin de la réunion"
-                  value={endDate}
+                  value={end?.$d}
                   onChange={(newValue) => setEndDate(newValue)}
                 />
               </LocalizationProvider>
             </div>
             <div className='rooms'>
-              <label htmlFor="room">Sélectionner une salle</label>
-              <select name="room" value={roomBooking} onChange={handleRoomChange}>
-                {rooms.map((room) => (
-                  <option key={room.id} value={room.id}>{room.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className='users'>
-              <label htmlFor="users">Invités</label>
+              <label htmlFor="room">Salle</label>
               <Select
-                options={optionList}
-                placeholder="Sélectionner des invités"
-                value={selectedOptions}
-                onChange={handleSelect}
-                isSearchable={true}
-                isMulti
+                name="room"
+                placeholder="Sélectionner une salle"
+                options={rooms.map((room) => ({
+                  value: room.id,
+                  label: room.name
+                }))}
+                onChange={setRoomBooking}
+                value={roomBooking}
+                required
               />
             </div>
-            <SubmitButton text="Créer" backgroundColor="var(--primary-text)" />
+            <div className='users'>
+              <label htmlFor="users">Participants</label>
+              <Select
+                options={optionList}
+                placeholder="Sélectionner des participants"
+                value={selectedOptions}
+                onChange={setSelectedOptions}
+                isSearchable={true}
+                isMulti
+                required
+              />
+            </div>
+            <SubmitButton text="Créer" backgroundColor="var(--accident)" />
           </Form>
         </Wrap>
       </Section>

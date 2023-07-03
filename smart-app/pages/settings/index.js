@@ -11,13 +11,10 @@ const nunito = Nunito({
 })
 
 const Section = styled.section`
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-top: 5.5rem;
-  width: 100%;
+  display: grid;
+  place-items: center;
   background-color: var(--text-light);
+  min-height: 95vh;
 `;
 
 const Container = styled.div`
@@ -95,17 +92,43 @@ const Edit = styled.div`
   display: flex;
   margin-top: 6.12rem;
   
-  div {
+  a {
     display: flex;
-    width: 12.5rem;
-    padding: 0.9375rem 0rem;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    margin-inline: auto;
-    border-radius: 30px;
     background: var(--main);
     color: var(--text-light);
+    border: none;
+    border-radius: 30px;
+    padding: 0.9375rem 1.5rem;
+    margin-inline: auto;
+    cursor: pointer;
+
+    @media screen and (hover: hover) {
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        border-radius: 50%;
+        background: var(--text-light);
+        opacity: 0.35;
+        transition: transform 0.5s ease-out;
+        transform-origin: center;
+        width: 5rem;
+        height: 5rem;
+      }
+
+      &:hover::before {
+        transform: translate(-50%, -50%) scale(2);
+      }
+    }
   }
 `;
 
@@ -155,10 +178,10 @@ export default function Settings() {
             </li>
           </List>
           <Edit>
-            <div>
+            <Link href='/settings/edit'>
+              <span>Modifier</span>
               <Icon icon="akar-icons:edit" />
-              <Link href='/settings/edit'>Modifier</Link>
-            </div>
+            </Link>
           </Edit>
         </Container>
       </Wrap>

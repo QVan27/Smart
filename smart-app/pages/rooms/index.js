@@ -4,6 +4,7 @@ import Wrap from '@components/Wrap'
 import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
+import LinkButton from '@/src/components/buttons/LinkButton';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -11,10 +12,15 @@ const nunito = Nunito({
 })
 
 const Section = styled.section`
-  min-height: 100vh;
+  display: grid;
+  place-items: center;
   padding: 5.5rem 0;
   width: 100%;
   background-color: var(--text-light);
+
+  @media screen and (min-width: 1200px) {
+    min-height: 95vh;
+  }
 `;
 
 const List = styled.ul`
@@ -158,6 +164,7 @@ export default function Rooms() {
               </li>
             ))}
           </List>
+          <LinkButton href="/rooms/add" text="Ajouter une salle" backgroundColor="var(--main)" />
         </Wrap>
       </Section>
     </>
