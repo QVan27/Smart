@@ -2,12 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
+import { Orbitron, Nunito } from 'next/font/google'
 import SubmitButton from '@components/buttons/SubmitButton'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Select from 'react-select';
 
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weights: [400, 700],
+})
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  weights: [400, 700],
+})
 
 const Section = styled.section`
   display: grid;
@@ -20,6 +30,7 @@ const Section = styled.section`
 
 const Form = styled.form`
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 1.5rem;
   margin-inline: auto;
@@ -55,6 +66,17 @@ const Form = styled.form`
   }
 `;
 
+const ErrorMessage = styled.p`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+  top: -25px;
+  color: var(--accident);
+  font-size: 0.875rem;
+`;
+
 export default function CreateBooking() {
   const router = useRouter();
   const [start, setStartDate] = useState(null);
@@ -63,7 +85,7 @@ export default function CreateBooking() {
   const [rooms, setRooms] = useState([]);
   const [purpose, setPurpose] = useState('');
   const [selectedOptions, setSelectedOptions] = useState();
-
+  const [error, setError] = useState('');
   const [optionList, setOptionList] = useState([]);
   const userIds = selectedOptions?.map(option => option.value);
 
@@ -121,6 +143,11 @@ export default function CreateBooking() {
     e.preventDefault()
 
     try {
+      if (!start || !end) {
+        setError('Veuillez sélectionner une date de début et de fin');
+        return;
+      }
+
       const res = await fetch('http://localhost:8080/api/bookings', {
         method: 'POST',
         headers: {
@@ -153,9 +180,10 @@ export default function CreateBooking() {
 
   return (
     <>
-      <Section>
+      <Section className={nunito.className}>
         <Wrap>
           <Form onSubmit={handleSubmit}>
+            {error && <ErrorMessage className={orbitron.className}>{error}</ErrorMessage>}
             <div className='title'>
               <label htmlFor='purpose'>Objet de la réunion</label>
               <input
@@ -163,6 +191,7 @@ export default function CreateBooking() {
                 id="purpose"
                 placeholder='Optimisation UI/UX : Actions Concrètes'
                 value={purpose}
+                required
                 onChange={handlePurposeChange} />
             </div>
             <div className='dates'>
@@ -190,6 +219,7 @@ export default function CreateBooking() {
                 }))}
                 onChange={setRoomBooking}
                 value={roomBooking}
+                required
               />
             </div>
             <div className='users'>
@@ -201,9 +231,10 @@ export default function CreateBooking() {
                 onChange={setSelectedOptions}
                 isSearchable={true}
                 isMulti
+                required
               />
             </div>
-            <SubmitButton text="Créer" backgroundColor="var(--primary-text)" />
+            <SubmitButton text="Créer" backgroundColor="var(--accident)" />
           </Form>
         </Wrap>
       </Section>

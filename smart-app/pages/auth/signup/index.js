@@ -1,10 +1,10 @@
+import React, { useState } from "react";
 import AuthLayout from '@components/layouts/AuthLayout'
 import styled from 'styled-components'
 import { Orbitron } from 'next/font/google'
 import Image from 'next/image'
 import Wrap from '@components/Wrap'
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import SubmitButton from '@components/buttons/SubmitButton'
 
 const orbitron = Orbitron({
