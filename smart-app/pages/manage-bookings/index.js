@@ -295,12 +295,12 @@ export default function ManageBooking() {
               <List>
                 {bookings?.filter((booking) => booking.isApproved === true)
                   .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                  .map((booking, i) => {
+                  .map((booking, j) => {
                     const firstFiveUsers = booking?.users.slice(0, 5);
                     const remainingUsersCount = booking?.users.length - firstFiveUsers.length;
                     return (
                       <>
-                        <Item key={i}>
+                        <Item key={j}>
                           <Link href={`/${booking?.id}`}>
                             <BookingCard className={nunito.className}>
                               <div className='heading'>

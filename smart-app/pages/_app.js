@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import Layout from "@components/layouts/Layout";
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import "@styles/reset.css";
 import "@styles/globals.css";
 
@@ -11,14 +10,14 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
+    const isPublicPage = ['/auth/signin', '/auth/signup'].includes(router.pathname);
 
-    if (accessToken) router.push('/');
-    else router.push('/auth/signin');
+    if (!accessToken && !isPublicPage) {
+      router.push('/auth/signin');
+    }
   }, []);
 
-  const renderWithLayout = Component.getLayout || (() => <Layout>
-    <Component {...pageProps} />
-  </Layout>);
+  const renderWithLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
 
   return (
     <>
