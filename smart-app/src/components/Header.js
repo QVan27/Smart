@@ -290,6 +290,7 @@ export default function Header() {
     '/settings/edit': fullName,
     '/employees': 'Employés',
     '/employees/[id]': 'Employé(e)',
+    '/employees/create': 'Ajouter un(e) employé(e)',
     '/rooms': 'Salles',
     '/rooms/[id]': 'Salle',
     '/rooms/edit': 'Modifier une salle',
@@ -312,7 +313,7 @@ export default function Header() {
               <span>{headerText}</span>
             </div>
           </div>
-          <BackButton onClick={handleBackClick}><Icon icon="ep:back" /><span className={orbitron.className}>Retour</span></BackButton>
+          <BackButton onClick={handleBackClick}><Icon icon="ep:back" /><span>Retour</span></BackButton>
         </div>
       </Container>
       <SideBar className={isActive ? 'active' : ''}>

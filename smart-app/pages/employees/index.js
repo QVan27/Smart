@@ -30,7 +30,24 @@ const Research = styled.div`
     margin-inline: auto;
   }
 
-  span { margin-bottom: 1.25rem; }
+  
+  .add {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+    margin-bottom: 1.25rem;
+
+    a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: underline;
+      transition: opacity 0.5s ease-out;
+
+      @media screen and (hover: hover) { &:hover { opacity: 0.65; } }
+    }
+
+    @media screen and (min-width: 1200px) { padding-right: 0; }
+  }
   
   .filters {
     display: flex;
@@ -141,9 +158,10 @@ const User = styled.li`
 export default function Edit() {
   const [users, setUsers] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchUsersInfo = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/users', {
           headers: {
@@ -153,6 +171,7 @@ export default function Edit() {
 
         if (response.ok) {
           const user = await response.json();
+
           setUsers(user);
         } else {
           console.log('Failed to fetch user information.');
@@ -162,17 +181,43 @@ export default function Edit() {
       }
     };
 
-    fetchUserInfo();
+    fetchUsersInfo();
   }, []);
 
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
-  };
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/user', {
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken')
+          }
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+
+          setCurrentUser(user);
+        } else {
+          console.log('Failed to fetch user information.');
+        }
+      } catch (error) {
+        console.error('Error fetching user information:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  const handleFilterChange = (filter) => { setActiveFilter(filter); };
+  const showButtonsAdmin = currentUser?.roles.includes('ADMIN');
 
   return (
     <Section className={nunito.className}>
       <Research>
-        <span>Groupes</span>
+        <div className='add'>
+          <span>Groupes</span>
+          {showButtonsAdmin && <Link href="/employees/create">Ajouter</Link>}
+        </div>
         <div className='filters'>
           <div
             className={`filter ${activeFilter === 'all' ? 'active' : ''}`}

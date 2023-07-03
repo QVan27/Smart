@@ -172,6 +172,25 @@ REST API
 | :-------- | :------- | :------------------------- |
 | `x-access-token` | `string` | **Required**. Your access token |
 
+### Creates a new user and saves them to the database
+
+```http
+  POST api/users/
+```
+#### Body
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@smart.com",
+  "position": "developpeur",
+  "picture": "",
+  "password": "password123",
+  "roles": ["USER"]
+}
+```
+
 ## Rooms
 
 ### Retrieves all bookings belonging to a room

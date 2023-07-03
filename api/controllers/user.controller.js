@@ -3,8 +3,10 @@ const db = require("../models");
 const User = db.user;
 const Booking = db.booking;
 const Room = db.room;
+const Role = db.role;
 const bcrypt = require("bcryptjs");
 require('dotenv').config()
+const { Op } = require("sequelize");
 
 /**
  * Retrieves all users from the database.
@@ -282,3 +284,74 @@ exports.getUserInfo = async (req, res, next) => {
         next(new ErrorResponse(err.message, 500));
     }
 };
+
+/**
+ * Creates a new user and saves them to the database.
+ *
+ * @function createUser
+ * @param {Object} req - Express request object.
+ * @param {Object} req.body - Request body containing user data.
+ * @param {string} req.body.firstName - First name of the user.
+ * @param {string} req.body.lastName - Last name of the user.
+ * @param {string} req.body.email - Email address of the user.
+ * @param {string} req.body.position - Position of the user.
+ * @param {string} req.body.picture - Picture of the user.
+ * @param {string} req.body.password - Password of the user.
+ * @param {string[]} [req.body.roles] - Array containing the roles of the user.
+ * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
+ * @returns {void}
+ * @throws {ErrorResponse} - If an error occurs while saving the user to the database.
+ *
+ * @example
+ * const req = {
+ *     body: {
+ *         firstName: "John",
+ *         lastName: "Doe",
+ *         email: "johndoe@example.com",
+ *         position: "Developer",
+ *         picture: "profile.jpg",
+ *         password: "password123",
+ *         roles: ["MODERATOR", "USER"]
+ *     }
+ * };
+ * const res = {
+ *     send: function(data) { console.log(data); },
+ *     status: function(code) { return this; }
+ * };
+ * createUser(req, res);
+ */
+exports.createUser = async (req, res, next) => {
+    try {
+        const { firstName, lastName, email, position, picture, password, roles } = req.body;
+        const user = await User.create({
+            firstName,
+            lastName,
+            email,
+            position,
+            picture,
+            password: bcrypt.hashSync(password, 8)
+        });
+
+        if (roles && roles.length > 0) {
+            const foundRoles = await Role.findAll({
+                where: {
+                    name: {
+                        [Op.or]: roles
+                    }
+                }
+            });
+
+            await user.setRoles(foundRoles);
+        } else {
+            const defaultRole = await Role.findOne({ where: { name: 'USER' } });
+
+            await user.setRoles([defaultRole]);
+        }
+
+        res.send({ message: "User was registered successfully!" });
+    } catch (error) {
+        next(new ErrorResponse(error.message, 500));
+    }
+};
+
