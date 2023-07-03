@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { Nunito } from 'next/font/google'
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
@@ -166,6 +165,10 @@ const Button = styled.button`
   font-weight: 700;
   cursor: pointer;
 
+  &.delete {
+    background: var(--accident);
+  }
+
   @media screen and (hover: hover) {
     position: relative;
     overflow: hidden;
@@ -185,14 +188,14 @@ const Button = styled.button`
       border-radius: 50%;
       background: var(--text-light);
       opacity: 0.35;
-      transition: transform 0.5s ease-in-out;
+      transition: transform 0.5s ease-out;
       transform-origin: center;
-      width: 20rem;
-      height: 20rem;
+      width: 10rem;
+      height: 10rem;
     }
 
     &:hover::before {
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, -50%) scale(1.5);
     }
   }
 `;
@@ -237,8 +240,8 @@ export default function SingleEmployee() {
   const [userInfo, setUserInfo] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isActive, setIsActive] = useState(false);
-  const [email, setEmail] = useState('');
-  const [position, setPosition] = useState('');
+  const [email, setEmail] = useState(userInfo?.email || '');
+  const [position, setPosition] = useState(userInfo?.position || '');
 
   const handleClick = () => {
     setIsActive(!isActive);
@@ -332,8 +335,8 @@ export default function SingleEmployee() {
           'x-access-token': localStorage.getItem('accessToken')
         },
         body: JSON.stringify({
-          email: email,
-          position: position,
+          email,
+          position,
         }),
       });
 
@@ -377,7 +380,7 @@ export default function SingleEmployee() {
                     <span>Modifier</span>
                   </Button>
                   {showButtonsAdmin && (
-                    <Button onClick={handleDelete}>
+                    <Button onClick={handleDelete} className='delete'>
                       <Icon icon="mdi:trash-can-outline" />
                       <span>Supprimer</span>
                     </Button>
@@ -399,7 +402,7 @@ export default function SingleEmployee() {
                           placeholder={userInfo?.email}
                           value={email}
                           onChange={handleEmailInputChange}
-                        />
+                          required />
                       </div>
                       <div className='form-group'>
                         <label htmlFor='email'>Position :</label>
@@ -410,7 +413,7 @@ export default function SingleEmployee() {
                           placeholder={userInfo?.position}
                           value={position}
                           onChange={handlePositionInputChange}
-                        />
+                          required />
                       </div>
                       <SubmitButton text="Valider" backgroundColor="var(--accident)" />
                     </Form>
