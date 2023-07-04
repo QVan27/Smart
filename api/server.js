@@ -35,10 +35,10 @@ require('./routes/booking.routes')(app);
 app.use(errorHandler);
 
 // set port, listen for requests
-// const PORT = process.env.PORT;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}.`);
-// });
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
 
 module.exports = app
 
