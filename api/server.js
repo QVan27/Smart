@@ -36,6 +36,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
+module.exports = app
+
 // const db = require("./models");
 // const Role = db.role;
 // // const User = db.user;

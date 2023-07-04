@@ -93,3 +93,4 @@ web_modules/
 ### Node Patch ###
 # Serverless Webpack directories
 .webpack/
+.vercel
