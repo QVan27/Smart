@@ -343,7 +343,7 @@ export default function Header() {
             <li onClick={handleLinkClick} className={router.pathname === "/rooms" ? "active" : ""}><Icon icon="cil:room" /><Link href='/rooms'>Salles</Link></li>
             <li onClick={handleLinkClick} className={router.pathname === "/employees" ? "active" : ""}><Icon icon="mdi:people" /><Link href='/employees'>Employés</Link></li>
             {showManagerLink && (
-              <li onClick={handleLinkClick} className={router.pathname === "/manage-bookings" ? "active" : ""}><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Manager</Link></li>
+              <li onClick={handleLinkClick} className={router.pathname === "/manage-bookings" ? "active" : ""}><Icon icon="material-symbols:manage-accounts" /><Link href='/manage-bookings'>Gérer</Link></li>
             )}
             <li onClick={handleLinkClick} className={router.pathname === "/settings" ? "active" : ""}><Icon icon="material-symbols:settings" /><Link href='/settings'>Paramètres</Link></li>
             <li onClick={handleLogout}><Icon icon="iconamoon:exit" /><span>Déconnexion</span></li>

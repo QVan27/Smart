@@ -362,3 +362,43 @@ exports.removeUserFromBooking = async (req, res, next) => {
     next(new ErrorResponse("An error occurred while removing the user from the booking.", 500));
   }
 };
+
+/**
+ * Adds users to a booking.
+ *
+ * @async
+ * @function addUsersToBooking
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.bookingId - ID of the booking.
+ * @param {Object} req.body - Request body.
+ * @param {string[]} req.body.userIds - Array of user IDs to add.
+ * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while adding users to the booking.
+ */
+exports.addUsersToBooking = async (req, res, next) => {
+  const bookingId = req.params.bookingId;
+  const userIds = req.body.userIds;
+
+  try {
+    const booking = await Booking.findByPk(bookingId);
+
+    if (!booking) {
+      return next(new ErrorResponse("Booking not found.", 404));
+    }
+
+    const users = await User.findAll({ where: { id: userIds } });
+
+    if (users.length !== userIds.length) {
+      return next(new ErrorResponse("One or more users not found.", 404));
+    }
+
+    await booking.addUsers(users);
+
+    res.send({ message: "Users added to the booking successfully." });
+  } catch (err) {
+    next(new ErrorResponse("An error occurred while adding users to the booking.", 500));
+  }
+};

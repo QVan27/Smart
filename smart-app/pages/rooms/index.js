@@ -18,8 +18,9 @@ const Section = styled.section`
   width: 100%;
   background-color: var(--text-light);
 
-  @media screen and (min-width: 1200px) {
+  @media screen and (min-width: 1180px) {
     min-height: 95vh;
+    padding: 4rem 0;
   }
 `;
 
@@ -110,6 +111,7 @@ const Room = styled.div`
 
 export default function Rooms() {
   const [rooms, setRooms] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -133,6 +135,31 @@ export default function Rooms() {
 
     fetchRooms();
   }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/user', {
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken')
+          }
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+          setUser(user);
+        } else {
+          console.log('Failed to fetch user information.');
+        }
+      } catch (error) {
+        console.error('Error fetching user information:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const showButtonsAdminOrModerator = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
 
   return (
     <>
@@ -164,7 +191,9 @@ export default function Rooms() {
               </li>
             ))}
           </List>
-          <LinkButton href="/rooms/add" text="Ajouter une salle" backgroundColor="var(--main)" />
+          {showButtonsAdminOrModerator && (
+            <LinkButton href="/rooms/add" text="Ajouter une salle" backgroundColor="var(--main)" />
+          )}
         </Wrap>
       </Section>
     </>

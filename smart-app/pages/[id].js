@@ -6,6 +6,9 @@ import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 
+import Select from 'react-select';
+import SmallSubmitButton from '@components/buttons/SmallSubmitButton'
+
 const nunito = Nunito({
   subsets: ['latin'],
   weights: [400, 500, 700],
@@ -16,7 +19,7 @@ const Section = styled.section`
   display: grid;
   place-items: center;
   align-content: center;
-  padding-top: 5.5rem;
+  padding: 5.5rem 0;
   min-height: 95vh;
   width: 100%;
   background-color: var(--text-light);
@@ -36,7 +39,7 @@ const Section = styled.section`
   }
 
   @media screen and (min-width: 1180px) {
-    padding-top: 0;
+    padding: 0;
 
     .room-link {
       grid-area: 2 / 1 / 3 / 4;
@@ -180,7 +183,7 @@ const Room = styled.div`
 const List = styled.ul`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 1.25rem;
   margin-top: 1.88rem;
   padding-bottom: 1.88rem;
@@ -201,9 +204,10 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   display: flex;
-  padding: 0rem 0rem 0rem 0.9375rem;
+  position: relative;
   align-items: center;
   gap: 0.9375rem;
+  padding: 0rem 0rem 0rem 0.9375rem;
 
   .list__img {
     border-radius: 50%;
@@ -237,6 +241,10 @@ const ListItem = styled.li`
 `;
 
 const RemoveButton = styled.button`
+  position: absolute;
+  top: 50%;
+  right: -5rem;
+  transform: translateY(-50%);
   background: none;
   border: none;
   padding: 0;
@@ -244,6 +252,27 @@ const RemoveButton = styled.button`
   cursor: pointer;
 
   svg path { fill: var(--accident); }
+
+  @media screen and (min-width: 768px) {
+    right: 0;
+  }
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+
+  @media screen and (min-width: 768px) {
+    grid-area: 3 / 1 / 3 / 4;
+  }
+
+  .users {
+    display: flex;  
+    flex-direction: column;
+    gap: 0.875rem;
+  }
 `;
 
 export default function SingleBooking() {
@@ -252,6 +281,82 @@ export default function SingleBooking() {
   const [data, setData] = useState(null);
   const [room, setRoom] = useState(null);
   const booking = data?.booking;
+  const [user, setUser] = useState(null);
+  const showButtonsAdminOrModerator = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
+  const [optionList, setOptionList] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState();
+  const userIds = selectedOptions?.map(option => option.value);
+
+  const handleAddUsers = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/bookings/${id}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': localStorage.getItem('accessToken'),
+        },
+        body: JSON.stringify({ userIds }),
+      });
+
+      if (response.ok) {
+        console.log('Users added to the booking successfully.');
+      } else {
+        console.log('Failed to add users to the booking.');
+      }
+    } catch (error) {
+      console.error('Error adding users to the booking:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/users', {
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken')
+          }
+        });
+
+        if (response.ok) {
+          const users = await response.json();
+          const modifiedUsers = users.map(user => ({
+            value: user.id,
+            label: `${user.firstName} ${user.lastName} (${user.position})`
+          }));
+          setOptionList(modifiedUsers);
+        } else {
+          console.log('Failed to fetch users information.');
+        }
+      } catch (error) {
+        console.error('Error fetching users information:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/user', {
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken')
+          }
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+          setUser(user);
+        } else {
+          console.log('Failed to fetch user information.');
+        }
+      } catch (error) {
+        console.error('Error fetching user information:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -397,13 +502,32 @@ export default function SingleBooking() {
                             {user.position}
                           </div>
                         </div>
-                        <RemoveButton onClick={() => handleRemoveUser(user.id)}>
-                          <Icon icon="material-symbols:remove" />
-                        </RemoveButton>
+                        {showButtonsAdminOrModerator && (
+                          <RemoveButton onClick={() => handleRemoveUser(user.id)}>
+                            <Icon icon="gg:remove" />
+                          </RemoveButton>
+                        )}
                       </ListItem>
                     ))}
               </List>
             </div>
+            {showButtonsAdminOrModerator && (
+              <Form onSubmit={handleAddUsers}>
+                <div className='users'>
+                  <label htmlFor="users">Ajouter des participants</label>
+                  <Select
+                    options={optionList}
+                    placeholder="Sélectionner des participants"
+                    value={selectedOptions}
+                    onChange={setSelectedOptions}
+                    isSearchable={true}
+                    isMulti
+                    required
+                  />
+                </div>
+                <SmallSubmitButton text="Ajouter" backgroundColor="var(--accident)" />
+              </Form>
+            )}
           </Container>
         </Wrap>
       </Section>
