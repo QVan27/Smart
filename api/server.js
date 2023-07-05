@@ -6,7 +6,7 @@ require('dotenv').config()
 const app = express();
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN
+  origin: 'https://smart-app-prod.netlify.app/'
 };
 
 app.use(cors(corsOptions));
