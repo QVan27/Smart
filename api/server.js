@@ -32,9 +32,15 @@ app.use(errorHandler);
 
 // set port, listen for requests
 const PORT = process.env.PORT;
-app.listen(PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+const closeServer = () => {
+  server.close();
+};
+
+module.exports = { app, closeServer };
 
 // const db = require("./models");
 // const Role = db.role;
