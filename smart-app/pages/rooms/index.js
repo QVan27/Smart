@@ -160,7 +160,6 @@ export default function Rooms() {
   }, []);
 
   const showButtonsAdminOrModerator = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
-  const showButtonsAdmin = user?.roles.includes('ADMIN');
 
   return (
     <>

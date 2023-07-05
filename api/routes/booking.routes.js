@@ -14,6 +14,7 @@ module.exports = function (app) {
     app.get("/api/bookings/:bookingId", [authJwt.verifyToken], controller.getBookingById);
     app.get("/api/bookings/:bookingId/users", [authJwt.verifyToken], controller.getUsersByBooking);
     app.post("/api/bookings", [authJwt.verifyToken], controller.createBooking);
+    app.post("/api/bookings/:bookingId/users", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.addUsersToBooking);
     app.put("/api/bookings/:bookingId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.updateBooking);
     app.put('/api/bookings/:bookingId/approve', [authJwt.verifyToken, authJwt.isModerator], controller.approveBooking);
     app.delete("/api/bookings/:bookingId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.deleteBooking);

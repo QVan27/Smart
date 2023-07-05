@@ -319,6 +319,23 @@ REST API
 | :-------- | :------- | :------------------------- |
 | `x-access-token` | `string` | **Required**. Your access token |
 
+### Adds users to a booking
+
+```http
+  POST api/bookings/{id}/users
+```
+#### Body
+
+```json
+{
+  "userIds": ["2"]
+}
+```
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `x-access-token` | `string` | **Required**. Your access token |
+| `role` | `int` | **Required**. Admin / Moderator |
+
 ### Updates a booking by its ID and associates users with the booking
 
 ```http
