@@ -17,4 +17,5 @@ module.exports = function (app) {
     app.put("/api/bookings/:bookingId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.updateBooking);
     app.put('/api/bookings/:bookingId/approve', [authJwt.verifyToken, authJwt.isModerator], controller.approveBooking);
     app.delete("/api/bookings/:bookingId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.deleteBooking);
+    app.delete("/api/bookings/:bookingId/users/:userId", [authJwt.verifyToken, authJwt.isModeratorOrAdmin], controller.removeUserFromBooking);
 };

@@ -191,8 +191,11 @@ const List = styled.ul`
   }
 
   @media screen and (min-width: 1024px) {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
+  }
+  
+  @media screen and (min-width: 1180px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 `;
 
@@ -231,6 +234,16 @@ const ListItem = styled.li`
   &.active {
     background-color: var(--light-gray);
   }
+`;
+
+const RemoveButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+
+  svg path { fill: var(--accident); }
 `;
 
 export default function SingleBooking() {
@@ -291,6 +304,40 @@ export default function SingleBooking() {
     }
   }, [booking?.roomId]);
 
+  const handleRemoveUser = async (userId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/bookings/${booking?.id}/users/${userId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken'),
+          },
+        }
+      );
+
+      if (response.ok) {
+        const response = await fetch(`http://localhost:8080/api/bookings/${id}`, {
+          headers: {
+            'x-access-token': localStorage.getItem('accessToken')
+          }
+        });
+
+        if (response.ok) {
+          const booking = await response.json();
+          setData(booking);
+        } else {
+          console.log('Failed to fetch booking information.');
+        }
+        console.log('User removed from booking successfully.');
+      } else {
+        console.log('Failed to remove user from booking.');
+      }
+    } catch (error) {
+      console.error('Error removing user from booking:', error);
+    }
+  };
+
   return (
     <>
       <Section className={nunito.className}>
@@ -350,6 +397,9 @@ export default function SingleBooking() {
                             {user.position}
                           </div>
                         </div>
+                        <RemoveButton onClick={() => handleRemoveUser(user.id)}>
+                          <Icon icon="material-symbols:remove" />
+                        </RemoveButton>
                       </ListItem>
                     ))}
               </List>

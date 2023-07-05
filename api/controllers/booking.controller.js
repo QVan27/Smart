@@ -316,3 +316,49 @@ exports.approveBooking = async (req, res, next) => {
     next(new ErrorResponse("An error occurred while approving the booking.", 500));
   }
 };
+
+/**
+ * Removes a user from a booking.
+ *
+ * @async
+ * @function removeUserFromBooking
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Request parameters.
+ * @param {string} req.params.bookingId - ID of the booking.
+ * @param {string} req.params.userId - ID of the user to remove.
+ * @param {Object} res - Express response object.
+ * @param {Object} next - Express next middleware function.
+ * @returns {Promise<void>} - A Promise that resolves with no value upon completion.
+ * @throws {Error} - If an error occurs while removing the user from the booking.
+ */
+exports.removeUserFromBooking = async (req, res, next) => {
+  const bookingId = req.params.bookingId;
+  const userId = req.params.userId;
+
+  try {
+    // Check if the booking exists
+    const booking = await Booking.findByPk(bookingId);
+    if (!booking) {
+      return next(new ErrorResponse("Booking not found.", 404));
+    }
+
+    // Check if the user exists
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return next(new ErrorResponse("User not found.", 404));
+    }
+
+    // Check if the user is associated with the booking
+    const users = await booking.getUsers({ where: { id: userId } });
+    if (users.length === 0) {
+      return next(new ErrorResponse("User is not associated with the booking.", 400));
+    }
+
+    // Remove the user from the booking
+    await booking.removeUser(user);
+
+    res.send({ message: "User removed from the booking successfully." });
+  } catch (err) {
+    next(new ErrorResponse("An error occurred while removing the user from the booking.", 500));
+  }
+};

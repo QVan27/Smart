@@ -357,3 +357,13 @@ REST API
 | :-------- | :------- | :------------------------- |
 | `x-access-token` | `string` | **Required**. Your access token |
 | `role` | `int` | **Required**. Moderator |
+
+### Removes a user from a booking
+
+```http
+  DELETE api/bookings/{id}/users/{userId}
+```
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `x-access-token` | `string` | **Required**. Your access token |
+| `role` | `int` | **Required**. Admin / Moderator |
