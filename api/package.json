@@ -8,7 +8,9 @@
     "db-seeds": "npx sequelize db:seed:all",
     "db-drop": "npx sequelize db:drop",
     "db-create": "npx sequelize db:create",
-    "server": "node server.js"
+    "server": "node server.js",
+    "start": "./node_modules/.bin/netlify-lambda serve api",
+    "build": "./node_modules/.bin/netlify-lambda build api"
   },
   "jest": {
     "testEnvironment": "node",
@@ -27,8 +29,7 @@
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.4.0",
     "sequelize": "^6.32.1",
-    "sequelize-cli": "^6.6.1",
-    "serverless-http": "^3.2.0"
+    "sequelize-cli": "^6.6.1"
   },
   "devDependencies": {
     "jest": "^29.6.0",
