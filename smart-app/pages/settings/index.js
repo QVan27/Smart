@@ -173,7 +173,7 @@ export default function Settings() {
           </Info>
           <List>
             <li>
-              <p>Position</p>
+              <p>Poste</p>
               <p>{userInfo?.position}</p>
             </li>
           </List>

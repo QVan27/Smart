@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
+import Select from 'react-select';
+import { Nunito } from 'next/font/google'
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
-import { Nunito } from 'next/font/google'
 import { Icon } from '@iconify/react';
-import { useRouter } from 'next/router';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -106,7 +107,9 @@ export default function Edit() {
   );
   const [email, setEmail] = useState('');
   const [picture, setPicture] = useState('');
-  const [position, setPosition] = useState('');
+  // const [position, setPosition] = useState('');
+  const [positionOptions, setPositionOptions] = useState(null);
+  const position = positionOptions?.value;
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -149,9 +152,9 @@ export default function Edit() {
           'x-access-token': accessToken,
         },
         body: JSON.stringify({
-          email: email,
-          picture: picture,
-          position: position,
+          email,
+          picture,
+          position,
         }),
       });
 
@@ -206,17 +209,20 @@ export default function Edit() {
                 onChange={handlePictureChange}
                 required />
             </div>
-            <div className='form-group'>
-              <label htmlFor="position">Position</label>
-              <input
-                type="text"
-                id="position"
-                name="position"
-                placeholder={userInfo?.position}
-                value={position}
-                onChange={handlePositionChange}
-                required />
-            </div>
+            <Select
+              name="position"
+              placeholder="Sélectionner un poste"
+              options={[
+                { value: 'developer', label: 'Developer' },
+                { value: 'designer', label: 'Designer' },
+                { value: 'marketing', label: 'Marketing' },
+                { value: 'manager', label: 'Manager' },
+                { value: 'ux/ui', label: 'UX/UI' },
+              ]}
+              onChange={setPositionOptions}
+              value={positionOptions}
+              required
+            />
             <Send>
               <button type='submit'>
                 <span>Valider</span>

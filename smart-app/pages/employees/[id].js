@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import { Nunito } from 'next/font/google'
+import Select from 'react-select';
 import styled from "styled-components";
 import Wrap from '@components/Wrap'
 import { Icon } from '@iconify/react';
@@ -201,6 +202,11 @@ const Button = styled.button`
 `;
 
 const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: stretch;
+
   .form-group {
     display: flex;
     flex-direction: column;
@@ -216,7 +222,7 @@ const Form = styled.form`
     }
   
     input {
-      margin: 0.375rem 0 1.87rem 0;
+      margin: 0.375rem 0 0 0;
       background-color: transparent;
       border: none;
       border-bottom: 1px solid var(--secondary-text);
@@ -241,7 +247,8 @@ export default function SingleEmployee() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isActive, setIsActive] = useState(false);
   const [email, setEmail] = useState(userInfo?.email || '');
-  const [position, setPosition] = useState(userInfo?.position || '');
+  const [positionOptions, setPositionOptions] = useState(null);
+  const position = positionOptions?.value;
 
   const handleClick = () => {
     setIsActive(!isActive);
@@ -249,10 +256,6 @@ export default function SingleEmployee() {
 
   const handleEmailInputChange = (e) => {
     setEmail(e.target.value)
-  };
-
-  const handlePositionInputChange = (e) => {
-    setPosition(e.target.value)
   };
 
   const handleDelete = async () => {
@@ -365,7 +368,7 @@ export default function SingleEmployee() {
           </Info>
           <List>
             <li>
-              <p>Position</p>
+              <p>Poste</p>
               <p>{userInfo?.position}</p>
             </li>
           </List>
@@ -404,17 +407,20 @@ export default function SingleEmployee() {
                           onChange={handleEmailInputChange}
                           required />
                       </div>
-                      <div className='form-group'>
-                        <label htmlFor='email'>Position :</label>
-                        <input
-                          type='text'
-                          id='email'
-                          name='email'
-                          placeholder={userInfo?.position}
-                          value={position}
-                          onChange={handlePositionInputChange}
-                          required />
-                      </div>
+                      <Select
+                        name="position"
+                        placeholder="Sélectionner un poste"
+                        options={[
+                          { value: 'developer', label: 'Developer' },
+                          { value: 'designer', label: 'Designer' },
+                          { value: 'marketing', label: 'Marketing' },
+                          { value: 'manager', label: 'Manager' },
+                          { value: 'ux/ui', label: 'UX/UI' },
+                        ]}
+                        onChange={setPositionOptions}
+                        value={positionOptions}
+                        required
+                      />
                       <SubmitButton text="Valider" backgroundColor="var(--accident)" />
                     </Form>
                   </div>
