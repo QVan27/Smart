@@ -168,7 +168,7 @@ export default function CreateEmploye() {
               disabled />
             <Select
               name="position"
-              placeholder="Sélectionner une position"
+              placeholder="Sélectionner une poste"
               options={[
                 { value: 'developer', label: 'Developer' },
                 { value: 'designer', label: 'Designer' },

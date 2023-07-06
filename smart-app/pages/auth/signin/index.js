@@ -152,7 +152,7 @@ export default function SignIn() {
           <SubmitButton text="Se connecter" backgroundColor="var(--accident)" />
         </Form>
         <Redirect>
-          Ou créer <Link href="/auth/signup">votre comptre</Link>
+          Ou créer <Link href="/auth/signup">votre compte</Link>
         </Redirect>
       </Container>
     </Wrap>
