@@ -239,7 +239,7 @@ exports.getBookingsByRoomId = async (req, res, next) => {
     const bookings = await Booking.findAll({
       where: { roomId: roomId }, include: {
         model: User,
-        attributes: ['id', 'position', 'picture', 'email'] // Include specific user attributes you want to fetch
+        attributes: ['id', 'position', 'picture', 'email']
       }
     });
     res.send(bookings);
