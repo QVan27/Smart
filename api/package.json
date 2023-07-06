@@ -9,8 +9,7 @@
     "db-drop": "npx sequelize db:drop",
     "db-create": "npx sequelize db:create",
     "server": "node server.js",
-    "start": "./node_modules/.bin/netlify-lambda serve api",
-    "build": "./node_modules/.bin/netlify-lambda build api"
+    "build": "node server.js"
   },
   "jest": {
     "testEnvironment": "node",
