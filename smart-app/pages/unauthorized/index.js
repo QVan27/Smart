@@ -45,8 +45,8 @@ export default function Unauthorized() {
         <Wrap>
           <Container>
             <h1>Accès non autorisé</h1>
-            <p>Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
-            <Link href="/">Retour à l'accueil</Link>
+            <p>Vous n&apos;avez pas les droits nécessaires pour accéder à cette page.</p>
+            <Link href="/">Retour à l&apos;accueil</Link>
           </Container>
         </Wrap>
       </Section>
