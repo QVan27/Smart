@@ -137,22 +137,6 @@ exports.deleteUser = async (req, res, next) => {
  * };
  * await updateUser(req, res);
  */
-// exports.updateUser = async (req, res, next) => {
-//     try {
-//         if (req.body.password) req.body.password = bcrypt.hashSync(req.body.password, 8);
-
-//         const user = await User.findByPk(req.params.id);
-
-//         if (!user) {
-//             return next(new ErrorResponse("User does not exist!", 404));
-//         }
-
-//         await user.update(req.body);
-//         res.status(200).send({ message: "User updated successfully!" });
-//     } catch (err) {
-//         next(new ErrorResponse(err.message, 500));
-//     }
-// }
 exports.updateUser = async (req, res, next) => {
     try {
         if (req.body.password) {
